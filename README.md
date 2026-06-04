@@ -39,7 +39,15 @@ That's it. It installs **globally** — active in every repo you open. No file c
 
 > Then just open a crusty repo, run `claude`, and *talk to it* (see below). 👇
 
-## 🎬 How it works
+## 🎬 Watch it work
+
+A scary repo to a running app — discover, you approve, repair, and the guard swatting a destructive command mid-run:
+
+<div align="center">
+<img src="assets/demo.svg" alt="Animated terminal: legacy-discover writes a plan, you approve, legacy-repair fixes the blockers, the guard blocks rm -rf /, and the app boots" width="100%" />
+</div>
+
+## 🗺️ The two paths
 
 Two independent paths. One makes the app run; the other tells you whether it's worth owning.
 
