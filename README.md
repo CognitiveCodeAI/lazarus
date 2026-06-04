@@ -66,17 +66,7 @@ claude-legacy-marketplace/                 ← push THIS directory as a GitHub r
         └── scripts/check-destructive.sh   ← the guard (executable)
 ```
 
-### First publish
-
-```bash
-cd claude-legacy-marketplace
-git init && git add -A && git commit -m "Initial legacy-toolkit plugin"
-git branch -M main
-git remote add origin git@github.com:CognitiveCodeAI/claude-legacy-marketplace.git
-git push -u origin main
-```
-
-Then tell the team to run the two install commands above (with the real repo path).
+This repo is already published at `git@github.com:CognitiveCodeAI/claude-legacy-marketplace.git` (private). To work on it, clone it, edit, and push (see "Pushing updates").
 
 ### Pushing updates
 

@@ -36,7 +36,7 @@ Before any deep inspection:
 
 ### 3. Use the Explore Subagent
 
-For any repo over ~200 files, explicitly request the Explore Subagent for codebase mapping. For repos over ~2000 files, use the custom `repo-explorer` subagent (see `.claude/agents/repo-explorer.md`) which has Haiku-tier cost and a strict read-only tool allowlist.
+For any repo over ~200 files, explicitly request the Explore Subagent for codebase mapping. For repos over ~2000 files, use the custom `repo-explorer` subagent that ships with this toolkit (invoked by name; Haiku-tier cost and a strict read-only tool allowlist).
 
 ### 4. Apply confidence tags
 

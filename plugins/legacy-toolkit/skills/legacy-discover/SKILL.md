@@ -36,7 +36,7 @@ For monorepos, ask the user which workspace is in scope before continuing. Do no
 
 Plan Mode auto-activates the Explore Subagent for codebase research. For repos over ~200 files, explicitly request it: "Use the Explore Subagent to map the repository structure." The subagent runs in a separate context window and reports a summary, keeping the main session's context clean.
 
-For very large repos (over ~2000 files), recommend the `repo-explorer` custom subagent (see `.claude/agents/repo-explorer.md`) which has Haiku-tier cost and a strict read-only tool allowlist.
+For very large repos (over ~2000 files), recommend the `repo-explorer` custom subagent that ships with this toolkit (invoked by name; Haiku-tier cost and a strict read-only tool allowlist).
 
 ### 4. Trace evidence, not assumptions
 
