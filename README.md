@@ -1,10 +1,12 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="Legacy Toolkit — Claude Code plugin for reviving legacy codebases" width="100%" />
+<img src="assets/banner.png" alt="Lazarus — Claude Code plugin for reviving legacy codebases" width="100%" />
 
-# 🧰 Legacy Toolkit
+# 🧟 Lazarus
 
-### Point Claude at the scariest repo you own. It gets it **running**, **documented**, and **audited** — behind a guard that makes destructive commands *impossible*, not just discouraged.
+### Raise your dead codebases.
+
+Point Claude at the repo nobody understands — it **walks again**: running, documented, and audited — behind a guard that makes destructive commands *impossible*, not just discouraged.
 
 <p>
 <img src="https://img.shields.io/badge/license-MIT-22c55e" alt="MIT License" />
@@ -18,7 +20,7 @@
 
 ---
 
-You inherited a codebase. No README, no docs, the person who wrote it left in 2019, and it doesn't start. **Legacy Toolkit** is a Claude Code plugin that turns that knot into a running app — and writes down everything it learns so the next person (or the next you) doesn't suffer.
+You inherited a codebase. No README, no docs, the person who wrote it left in 2019, and it doesn't start. **Lazarus** is a Claude Code plugin that turns that knot into a running app — and writes down everything it learns so the next person (or the next you) doesn't suffer.
 
 ```
 🔍  "make this run locally"      →  a plan you approve, then a working app
@@ -31,8 +33,8 @@ You inherited a codebase. No README, no docs, the person who wrote it left in 20
 In any `claude` session, run two slash commands:
 
 ```text
-/plugin marketplace add CognitiveCodeAI/claude-legacy-marketplace
-/plugin install legacy-toolkit@cognitivecode
+/plugin marketplace add CognitiveCodeAI/lazarus
+/plugin install lazarus@cognitivecode
 ```
 
 That's it. It installs **globally** — active in every repo you open. No file copying, no config, no API keys. The repo is public, so there's nothing to sign up for.
@@ -80,7 +82,7 @@ You drive it in plain English — the right skill triggers itself:
 
 ## 🛡️ The part that makes it safe to actually run
 
-Here's the headline. Letting an agent loose in an unfamiliar repo is terrifying because one confident-but-wrong command can wreck your machine. So Legacy Toolkit ships a **deterministic guard** — a `PreToolUse` hook that inspects every shell command *before* it runs and refuses the dangerous ones.
+Here's the headline. Letting an agent loose in an unfamiliar repo is terrifying because one confident-but-wrong command can wreck your machine. So Lazarus ships a **deterministic guard** — a `PreToolUse` hook that inspects every shell command *before* it runs and refuses the dangerous ones.
 
 ```console
 # Claude, mid-repair, decides to "clean things up":
@@ -95,7 +97,7 @@ $ rm -rf / --no-preserve-root
 
 This is **not** a politely-worded instruction Claude can talk itself out of. It's a hook that runs outside the model and returns "no." It blocks `rm -rf /`, `git push --force`, `git reset --hard origin`, `DROP TABLE`, `terraform destroy`, `kubectl delete`, `npm publish`, and ~25 more patterns — and it **composes** with any hooks you already have, so nothing of yours is overwritten.
 
-<div align="center"><img src="assets/guard.png" alt="The Legacy Toolkit guard blocking a destructive command" width="320" /></div>
+<div align="center"><img src="assets/guard.png" alt="The Lazarus guard blocking a destructive command" width="320" /></div>
 
 ---
 
@@ -104,7 +106,7 @@ This is **not** a politely-worded instruction Claude can talk itself out of. It'
 
 <br/>
 
-Long-running agents have a documented failure mode: they quietly turn *guesses* into *established facts* over many turns, then act on them. Legacy Toolkit is engineered against that.
+Long-running agents have a documented failure mode: they quietly turn *guesses* into *established facts* over many turns, then act on them. Lazarus is engineered against that.
 
 - **Confidence tags on every claim.** Everything written to `DISCOVERY.md` is tagged `[VERIFIED]` (observed in a real command), `[INFERRED]` (one strong signal), or `[ASSUMED]` (a guess). A claim **cannot** be promoted to `[VERIFIED]` without actually executing and observing it. Only `[VERIFIED]` facts are ever allowed into a `CLAUDE.md`.
 
@@ -157,7 +159,7 @@ The design choices aren't arbitrary; each traces to a specific 2026 empirical fi
 <br/>
 
 ```
-legacy-toolkit/
+lazarus/
 ├── skills/
 │   ├── legacy-discover/    🔍 read-only triage → DISCOVERY.md (+ Definition of Done)
 │   ├── legacy-repair/      🔧 works blockers → VERIFICATION_REPORT.md → verified CLAUDE.md
@@ -190,7 +192,7 @@ No. The guard uses whichever of <code>jq</code> / <code>python3</code> / <code>p
 <details>
 <summary><b>How do updates work?</b></summary>
 <br/>
-Run <code>/plugin update legacy-toolkit@cognitivecode</code>. The plugin is versioned by git commit, so whatever's on <code>main</code> is what you get — no version numbers to chase.
+Run <code>/plugin update lazarus@cognitivecode</code>. The plugin is versioned by git commit, so whatever's on <code>main</code> is what you get — no version numbers to chase.
 </details>
 
 <details>
@@ -202,8 +204,8 @@ Yes — it's one regex in <code>scripts/check-destructive.sh</code>. Fork, edit,
 ## 🚀 Get started
 
 ```text
-/plugin marketplace add CognitiveCodeAI/claude-legacy-marketplace
-/plugin install legacy-toolkit@cognitivecode
+/plugin marketplace add CognitiveCodeAI/lazarus
+/plugin install lazarus@cognitivecode
 ```
 
 …then open that repo you've been avoiding and say **"make this run locally."**
@@ -220,9 +222,9 @@ If it saved you an afternoon, a ⭐ helps other people find it.
 This repository **is** the marketplace.
 
 ```
-claude-legacy-marketplace/                 ← this directory IS the GitHub repo root
+lazarus/                 ← this directory IS the GitHub repo root
 ├── .claude-plugin/marketplace.json        ← lists the plugin(s); "name" = cognitivecode (the @handle)
-└── plugins/legacy-toolkit/
+└── plugins/lazarus/
     ├── .claude-plugin/plugin.json          ← plugin manifest (no version → git SHA is the version)
     ├── skills/{legacy-discover,legacy-repair,principal-audit}/SKILL.md
     ├── agents/repo-explorer.md
@@ -235,19 +237,19 @@ claude-legacy-marketplace/                 ← this directory IS the GitHub repo
 ```bash
 # edit files, then:
 git commit -am "…" && git push
-# devs pick it up with:  /plugin update legacy-toolkit@cognitivecode
+# devs pick it up with:  /plugin update lazarus@cognitivecode
 ```
 
 **Validate before pushing** (the only expected warning is "No version specified"):
 
 ```bash
-claude plugin validate ./plugins/legacy-toolkit   # plugin manifest + components
+claude plugin validate ./plugins/lazarus   # plugin manifest + components
 claude plugin validate .                          # marketplace manifest
 ```
 
 **Gotcha that passes validation but fails to load:** never declare `"hooks": "./hooks/hooks.json"` in `plugin.json` — the standard `hooks/hooks.json` is auto-loaded, and declaring it too triggers "Duplicate hooks file detected." Only list *additional* hook files. Always test with a real local install (`claude plugin marketplace add ./. && claude plugin install …`), not just `validate`.
 
-**Renaming the marketplace.** The string after `@` in `legacy-toolkit@cognitivecode` is `name` in `.claude-plugin/marketplace.json`.
+**Renaming the marketplace.** The string after `@` in `lazarus@cognitivecode` is `name` in `.claude-plugin/marketplace.json`.
 
 </details>
 

@@ -11,7 +11,7 @@
   <circle cx="32" cy="29" r="6" fill="#ff5f56"/>
   <circle cx="52" cy="29" r="6" fill="#ffbd2e"/>
   <circle cx="72" cy="29" r="6" fill="#27c93f"/>
-  <text x="410" y="33" text-anchor="middle" font-size="13" fill="#5b6675">legacy-toolkit — live</text>
+  <text x="410" y="33" text-anchor="middle" font-size="13" fill="#5b6675">lazarus — live</text>
 
   <g clip-path="url(#screen)" font-size="15">
     <!-- L1 prompt -->
