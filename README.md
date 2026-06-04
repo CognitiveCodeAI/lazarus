@@ -1,10 +1,6 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="Lazarus — Claude Code plugin for reviving legacy codebases" width="100%" />
-
-# 🧟 Lazarus
-
-### Raise your dead codebases.
+<img src="assets/banner.png" alt="Lazarus — Raise your dead codebases. Safely. A Claude Code plugin." width="100%" />
 
 Point Claude at the repo nobody understands — it **walks again**: running, documented, and audited — behind a guard that makes destructive commands *impossible*, not just discouraged.
 
