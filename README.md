@@ -24,18 +24,24 @@ You inherited a codebase. No README, no docs, the person who wrote it left in 20
 🛡️  the whole time               →  a guard that blocks rm -rf, force-push, DROP TABLE…
 ```
 
-## ⚡ Install (30 seconds, no signup)
+## ⚡ Install (no signup, no SSH keys)
 
-In any `claude` session, run two slash commands:
+In any `claude` session, run these **two commands — one at a time** (press Enter after each; don't paste both together):
 
+**1 — add the marketplace**
 ```text
 /plugin marketplace add https://github.com/CognitiveCodeAI/lazarus
+```
+**2 — install the plugin**
+```text
 /plugin install lazarus@cognitivecode
 ```
 
-That's it. It installs **globally** — active in every repo you open. No file copying, no config, no API keys. The repo is public, so there's nothing to sign up for.
+That's it. It installs **globally** — active in every repo you open. No file copying, no config, no API keys, no signup.
 
-> Then just open a crusty repo, run `claude`, and *talk to it* (see below). 👇
+> **Use the full `https://…` URL, not the short `CognitiveCodeAI/lazarus` form.** The short form makes Claude Code clone over SSH; if you don't have GitHub SSH keys set up you'll get `Permission denied (publickey)` or `Host key verification failed`. The HTTPS URL needs no SSH and no auth — it just works.
+
+Then open a crusty repo, run `claude`, and *talk to it* (see below). 👇
 
 ## 🎬 Watch it work
 
@@ -199,8 +205,12 @@ Yes — it's one regex in <code>scripts/check-destructive.sh</code>. Fork, edit,
 
 ## 🚀 Get started
 
+Two commands, **one at a time**, in any `claude` session:
+
 ```text
 /plugin marketplace add https://github.com/CognitiveCodeAI/lazarus
+```
+```text
 /plugin install lazarus@cognitivecode
 ```
 
