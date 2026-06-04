@@ -29,7 +29,7 @@ You inherited a codebase. No README, no docs, the person who wrote it left in 20
 In any `claude` session, run two slash commands:
 
 ```text
-/plugin marketplace add CognitiveCodeAI/lazarus
+/plugin marketplace add https://github.com/CognitiveCodeAI/lazarus
 /plugin install lazarus@cognitivecode
 ```
 
@@ -200,7 +200,7 @@ Yes — it's one regex in <code>scripts/check-destructive.sh</code>. Fork, edit,
 ## 🚀 Get started
 
 ```text
-/plugin marketplace add CognitiveCodeAI/lazarus
+/plugin marketplace add https://github.com/CognitiveCodeAI/lazarus
 /plugin install lazarus@cognitivecode
 ```
 
