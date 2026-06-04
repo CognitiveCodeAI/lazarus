@@ -1,0 +1,15 @@
+{
+  "name": "cognitivecode",
+  "description": "Cognitive Code internal Claude Code plugins.",
+  "owner": {
+    "name": "Cognitive Code",
+    "email": "larry@cognitivecode.ai"
+  },
+  "plugins": [
+    {
+      "name": "legacy-toolkit",
+      "source": "./plugins/legacy-toolkit",
+      "description": "Onboard, repair, and audit legacy or unfamiliar codebases, with a deterministic destructive-command guard hook."
+    }
+  ]
+}

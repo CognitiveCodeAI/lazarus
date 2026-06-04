@@ -1,0 +1,11 @@
+{
+  "name": "legacy-toolkit",
+  "displayName": "Legacy Codebase Toolkit",
+  "description": "Onboard, repair, and audit legacy or unfamiliar codebases: discover -> ratify -> repair skills, a read-only explorer subagent, and a deterministic destructive-command guard hook.",
+  "author": {
+    "name": "Cognitive Code",
+    "email": "larry@cognitivecode.ai"
+  },
+  "license": "MIT",
+  "keywords": ["legacy", "onboarding", "repair", "audit", "discovery", "safety", "hooks"]
+}
