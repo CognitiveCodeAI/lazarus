@@ -1,14 +1,12 @@
 # Cognitive Code — Claude Code Plugins
 
-Internal Claude Code marketplace. Right now it hosts one plugin: **`legacy-toolkit`** — skills for onboarding, repairing, and auditing legacy codebases, plus a deterministic guard that blocks destructive shell commands.
+A public Claude Code marketplace from Cognitive Code. Right now it hosts one plugin: **`legacy-toolkit`** — skills for onboarding, repairing, and auditing legacy codebases, plus a deterministic guard that blocks destructive shell commands.
 
 ---
 
 ## For developers — install it (one time)
 
-> This repo is **private**, so you must be a collaborator on `CognitiveCodeAI/claude-legacy-marketplace` first (ask the maintainer). Then your normal `gh`/git login covers the install.
-
-Inside any `claude` session, run these two slash commands:
+This repo is public — no GitHub account, collaborator access, or token required. Inside any `claude` session, run these two slash commands:
 
 ```
 /plugin marketplace add CognitiveCodeAI/claude-legacy-marketplace
@@ -54,7 +52,7 @@ The guard hook parses tool input with `jq`, `python3`, `python`, or `perl` — a
 This repository **is** the marketplace. Its layout:
 
 ```
-claude-legacy-marketplace/                 ← push THIS directory as a GitHub repo
+claude-legacy-marketplace/                 ← this directory IS the GitHub repo root
 ├── .claude-plugin/
 │   └── marketplace.json                   ← lists the plugin(s); "name" = cognitivecode
 └── plugins/
@@ -87,9 +85,9 @@ claude plugin validate .                          # marketplace manifest
 
 (The only expected warning is "No version specified" — intentional, per above.)
 
-### Private repo note
+### Access
 
-If the GitHub repo is private, developers' existing `git` credentials (Keychain / `gh auth`) cover the manual install and update. For **background** auto-updates, each dev needs a `GITHUB_TOKEN` in their environment.
+The repo is public, so developers need no credentials to install or update — `/plugin marketplace add` and `/plugin update` work unauthenticated. (If you ever switch it back to private, devs then need collaborator access plus a `GITHUB_TOKEN` for background auto-updates.)
 
 ### Renaming the marketplace
 
