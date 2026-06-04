@@ -7,7 +7,7 @@ Point Claude at the repo nobody understands — it **walks again**: running, doc
 <p>
 <img src="https://img.shields.io/badge/license-MIT-22c55e" alt="MIT License" />
 <img src="https://img.shields.io/badge/Claude_Code-plugin-8b5cf6" alt="Claude Code plugin" />
-<img src="https://img.shields.io/badge/install-2_commands-0ea5e9" alt="2-command install" />
+<img src="https://img.shields.io/badge/install-3_commands-0ea5e9" alt="3-command install" />
 <img src="https://img.shields.io/badge/rm_--rf_%2F-blocked-ef4444" alt="rm -rf / blocked" />
 <img src="https://img.shields.io/badge/macOS_|_Linux-supported-64748b" alt="macOS and Linux" />
 </p>
@@ -26,7 +26,7 @@ You inherited a codebase. No README, no docs, the person who wrote it left in 20
 
 ## ⚡ Install (no signup, no SSH keys)
 
-In any `claude` session, run these **two commands — one at a time** (press Enter after each; don't paste both together):
+In any `claude` session, run these **three commands — one at a time** (press Enter after each; don't paste them together):
 
 **1 — add the marketplace**
 ```text
@@ -36,8 +36,14 @@ In any `claude` session, run these **two commands — one at a time** (press Ent
 ```text
 /plugin install lazarus@cognitivecode
 ```
+**3 — activate it in your session**
+```text
+/reload-plugins
+```
 
 That's it. It installs **globally** — active in every repo you open. No file copying, no config, no API keys, no signup.
+
+> **Don't skip step 3.** Installing *registers* the plugin, but its skills, hooks, and guard don't go live until you run `/reload-plugins` (or restart `claude`). If you tried a command below and nothing happened, this is almost always why.
 
 > **Use the full `https://…` URL, not the short `CognitiveCodeAI/lazarus` form.** The short form makes Claude Code clone over SSH; if you don't have GitHub SSH keys set up you'll get `Permission denied (publickey)` or `Host key verification failed`. The HTTPS URL needs no SSH and no auth — it just works.
 
@@ -74,13 +80,17 @@ flowchart LR
     style E fill:#fef9c3,stroke:#eab308,color:#111
 ```
 
-You drive it in plain English — the right skill triggers itself:
+**Type the command, or just describe what you want** — both work. The slash command is the fast path; plain English triggers the same skill.
 
-| You say… | What happens |
-|---|---|
-| *"Make this codebase run locally."* | **legacy-discover** investigates **read-only**, writes `DISCOVERY.md` with a plan and a concrete *definition of done*, then **stops and waits for you**. |
-| *"Execute the repair plan."* | **legacy-repair** works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. |
-| *"Do a principal engineer audit."* | **principal-audit** produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, a phased modernization plan. Read-only. |
+| Command | Also triggers on… | What it does |
+|---|---|---|
+| **`/legacy-discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* | Investigates **read-only**, writes `DISCOVERY.md` — a plan plus a concrete *definition of done* — then **stops and waits for you**. |
+| **`/legacy-repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first. |
+| **`/principal-audit`** | *"audit this codebase"* · *"refactor or rewrite?"* · *"is this safe to own?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, a phased modernization plan. **Read-only**, standalone — no discovery needed. |
+
+> **Not just broken legacy code.** Any unfamiliar repo qualifies — a service you just inherited, an open-source project you want to contribute to, or a perfectly healthy codebase you simply want a principal-level read on. `/principal-audit` is just as useful on code that already runs.
+>
+> **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
 
 ## 🛡️ The part that makes it safe to actually run
 
@@ -180,6 +190,12 @@ The `repo-explorer` subagent is deliberately restricted (read-only tool allowlis
 ## ❓ FAQ
 
 <details>
+<summary><b>I installed it but <code>/legacy-discover</code> (or the guard) does nothing. Why?</b></summary>
+<br/>
+You almost certainly skipped <code>/reload-plugins</code>. Installing registers the plugin; its skills, hooks, and guard only go live after you run <code>/reload-plugins</code> (or restart <code>claude</code>) in that session. Run it once and the <code>/legacy-discover</code>, <code>/legacy-repair</code>, and <code>/principal-audit</code> commands appear.
+</details>
+
+<details>
 <summary><b>Will it actually change my code without asking?</b></summary>
 <br/>
 Discovery and audit are read-only (Plan Mode). Repair changes code — but only after you approve the plan, and the guard blocks destructive shell commands throughout. You stay in the loop at the one decision that matters: ratifying what "done" means.
@@ -205,7 +221,7 @@ Yes — it's one regex in <code>scripts/check-destructive.sh</code>. Fork, edit,
 
 ## 🚀 Get started
 
-Two commands, **one at a time**, in any `claude` session:
+Three commands, **one at a time**, in any `claude` session:
 
 ```text
 /plugin marketplace add https://github.com/CognitiveCodeAI/lazarus
@@ -213,8 +229,11 @@ Two commands, **one at a time**, in any `claude` session:
 ```text
 /plugin install lazarus@cognitivecode
 ```
+```text
+/reload-plugins
+```
 
-…then open that repo you've been avoiding and say **"make this run locally."**
+…then open any repo and run **`/legacy-discover`** or **`/principal-audit`** — or just say **"make this run locally."**
 
 If it saved you an afternoon, a ⭐ helps other people find it.
 
