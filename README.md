@@ -6,12 +6,12 @@ Internal Claude Code marketplace. Right now it hosts one plugin: **`legacy-toolk
 
 ## For developers — install it (one time)
 
-> Replace `<your-org>/claude-legacy-marketplace` below with the real GitHub repo path once it's pushed (see the maintainer section).
+> This repo is **private**, so you must be a collaborator on `CognitiveCodeAI/claude-legacy-marketplace` first (ask the maintainer). Then your normal `gh`/git login covers the install.
 
 Inside any `claude` session, run these two slash commands:
 
 ```
-/plugin marketplace add <your-org>/claude-legacy-marketplace
+/plugin marketplace add CognitiveCodeAI/claude-legacy-marketplace
 /plugin install legacy-toolkit@cognitivecode
 ```
 
@@ -72,7 +72,7 @@ claude-legacy-marketplace/                 ← push THIS directory as a GitHub r
 cd claude-legacy-marketplace
 git init && git add -A && git commit -m "Initial legacy-toolkit plugin"
 git branch -M main
-git remote add origin git@github.com:<your-org>/claude-legacy-marketplace.git
+git remote add origin git@github.com:CognitiveCodeAI/claude-legacy-marketplace.git
 git push -u origin main
 ```
 
