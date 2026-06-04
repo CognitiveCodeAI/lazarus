@@ -30,7 +30,8 @@ jobs:
           H=plugins/lazarus/scripts/check-destructive.sh
           chmod +x "$H"
           assert() {
-            printf '%s' "$2" | "$H" >/dev/null 2>&1; rc=$?
+            rc=0
+            printf '%s' "$2" | "$H" >/dev/null 2>&1 || rc=$?
             if [ "$rc" != "$3" ]; then echo "FAIL: $1 (got $rc, want $3)"; exit 1; fi
             echo "ok: $1"
           }
