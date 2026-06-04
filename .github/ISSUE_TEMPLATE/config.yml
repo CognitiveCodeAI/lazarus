@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions & show-and-tell
+    url: https://github.com/CognitiveCodeAI/lazarus/discussions
+    about: For "how do I use this?", ideas, and sharing what you revived — please use Discussions, not issues.
+  - name: 🛡️ Report a security issue (private)
+    url: https://github.com/CognitiveCodeAI/lazarus/security/advisories/new
+    about: Please report vulnerabilities privately, not as a public issue.

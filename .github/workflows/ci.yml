@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON manifests
+        run: |
+          for f in .claude-plugin/marketplace.json \
+                   plugins/lazarus/.claude-plugin/plugin.json \
+                   plugins/lazarus/hooks/hooks.json; do
+            jq empty "$f" && echo "ok: $f"
+          done
+
+      - name: ShellCheck the guard
+        run: shellcheck --severity=error plugins/lazarus/scripts/check-destructive.sh
+
+      - name: Guard blocks destructive commands and allows safe ones
+        run: |
+          H=plugins/lazarus/scripts/check-destructive.sh
+          chmod +x "$H"
+          assert() {
+            printf '%s' "$2" | "$H" >/dev/null 2>&1; rc=$?
+            if [ "$rc" != "$3" ]; then echo "FAIL: $1 (got $rc, want $3)"; exit 1; fi
+            echo "ok: $1"
+          }
+          # destructive -> exit 2 (deny)
+          assert "rm -rf /"          '{"tool_name":"Bash","tool_input":{"command":"rm -rf / --no-preserve-root"}}' 2
+          assert "git push --force"  '{"tool_name":"Bash","tool_input":{"command":"git push origin main --force"}}' 2
+          assert "DROP TABLE"        '{"tool_name":"Bash","tool_input":{"command":"psql -c \"DROP TABLE users;\""}}' 2
+          assert "terraform destroy" '{"tool_name":"Bash","tool_input":{"command":"terraform destroy -auto-approve"}}' 2
+          # safe -> exit 0 (allow)
+          assert "npm test"          '{"tool_name":"Bash","tool_input":{"command":"npm test"}}' 0
+          assert "git push"          '{"tool_name":"Bash","tool_input":{"command":"git push origin feature"}}' 0
+          # precision: destructive word only in a non-command field must NOT block
+          assert "pattern in cwd"    '{"tool_name":"Bash","cwd":"/x/terraform destroy/","tool_input":{"command":"ls"}}' 0
