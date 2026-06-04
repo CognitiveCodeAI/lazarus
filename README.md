@@ -64,7 +64,7 @@ claude-legacy-marketplace/                 ← this directory IS the GitHub repo
         └── scripts/check-destructive.sh   ← the guard (executable)
 ```
 
-This repo is already published at `git@github.com:CognitiveCodeAI/claude-legacy-marketplace.git` (private). To work on it, clone it, edit, and push (see "Pushing updates").
+This repo is published (public) at `git@github.com:CognitiveCodeAI/claude-legacy-marketplace.git`. To work on it, clone it, edit, and push (see "Pushing updates").
 
 ### Pushing updates
 
