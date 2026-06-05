@@ -120,7 +120,7 @@ Phased:
 Each phase: objectives, concrete tasks, expected impact, risk level, suggested order.
 
 ## 11. Top 10 Action Items
-Ranked. For each: priority, action, impact, effort (S/M/L), risk, files involved, validation command.
+Ranked. For each: priority, **action** (a specific, stable title — downstream tools key on it), impact, effort (S/M/L), risk, files involved, and an **acceptance check** — a runnable command where one fits, otherwise a concrete observable assertion (e.g. signed token `exp` ≤ 24h). If an action is really an epic spanning many files/concerns, say so, so it can be split when turned into tickets.
 
 ## 12. Open Questions
 Only questions that materially affect the audit. Do NOT ask generic questions.
