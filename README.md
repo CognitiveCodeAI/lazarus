@@ -23,6 +23,18 @@ Point Claude at the repo nobody understands — it **walks again**: running, doc
 
 Both run behind a guard that blocks destructive commands before they ever run — and on the "make it run" side, **nothing changes until you approve the plan.** It'll resurrect a dead repo that won't even start (the namesake), but it's just as useful on healthy code you want made runnable, understood, or assessed.
 
+## 🚀 Is it *actually* ready?
+
+You wrote the code. But is it ready to **deploy**, ready to **open-source**, ready for **someone else's eyes**? Most of us never really know. Lazarus is the pre-flight check that tells you the truth — and **can't break anything finding out.**
+
+- 🌐 **Before you make it public** — `audit` finds the security holes and rough edges *before the internet does*. Open-source the repo you *meant* to ship.
+- 🚢 **Before you deploy** — a principal-engineer read on what's risky and what to fix first, even if you're a team of one.
+- 🤝 **Before you hand it off** — to a client, a teammate, a buyer — the audit *is* the deliverable: an honest health report with a ranked plan.
+- 🤖 **Before you let an AI loose in your repo** — point an agent at your code and walk away. The guard *physically can't* run the command that wrecks your machine.
+- ⏳ **When you come back to your own project months later** — `discover → repair` brings it back to life so you're not starting from zero.
+
+You don't have to be a principal engineer to get a principal engineer's read. That's the peace of mind: **know your code is solid — and that nothing broke proving it.**
+
 ## 🧭 Which to reach for
 
 Three skills in **two workflows**, with the guard across both. Match your situation:
@@ -177,18 +189,21 @@ The design choices aren't arbitrary; each traces to a specific 2026 empirical fi
 
 <br/>
 
+This repo is a Claude Code **plugin marketplace** with a small, growing family:
+
 ```
-lazarus/
-├── skills/
-│   ├── discover/    🔍 read-only triage → DISCOVERY.md (+ Definition of Done)
-│   ├── repair/      🔧 works blockers → VERIFICATION_REPORT.md → verified CLAUDE.md
-│   └── audit/       🧭 12-section strategic CODEBASE_AUDIT.md (read-only)
-├── agents/
-│   └── repo-explorer       🗺️ read-only, Haiku-tier subagent for mapping huge repos cheaply
-├── hooks/hooks.json        🛡️ wires the guard as a PreToolUse hook
-└── scripts/
-    └── check-destructive.sh   the guard itself
+lazarus/  ← the marketplace
+│
+├── plugins/lazarus/                 🧟 core   — /plugin install lazarus@cognitivecode
+│   ├── skills/discover · repair · audit    the two workflows
+│   ├── agents/repo-explorer                read-only Haiku subagent for huge repos
+│   └── hooks/ + scripts/check-destructive.sh   the deterministic guard
+│
+└── plugins/lazarus-backlog/         📋 optional companion — /plugin install lazarus-backlog@cognitivecode
+    └── skills/issues                       turns an audit's Top 10 into GitHub Issues
 ```
+
+**Built to grow.** Anything outward-facing (creating GitHub issues, posting to Slack, filing Linear/Jira tickets) ships as an **opt-in sibling plugin**, never bundled into core — so the three-command install stays zero-config and a `gh`/API failure can't reach anyone who didn't ask for it. `lazarus-backlog` is the first sibling; the rest are the same shape.
 
 The `repo-explorer` subagent is deliberately restricted (read-only tool allowlist, Haiku tier) so mapping a 5,000-file monolith doesn't burn your context or your budget.
 
@@ -223,7 +238,7 @@ Use <b>WSL</b>. The guard is a bash hook (<code>scripts/check-destructive.sh</co
 <details>
 <summary><b>How do updates work?</b></summary>
 <br/>
-Run <code>/plugin update lazarus@cognitivecode</code>. The plugin is versioned by git commit, so whatever's on <code>main</code> is what you get — no version numbers to chase.
+Run <code>/plugin update lazarus@cognitivecode</code> (and <code>lazarus-backlog</code> if you installed it). The plugin is git-SHA-versioned, so <code>/plugin update</code> always pulls the latest <code>main</code> — there's no version number you have to match. Tagged releases like <code>v0.2.1</code> are human-readable changelog markers (see <b>Releases</b>), not something you pin to.
 </details>
 
 <details>
@@ -261,13 +276,16 @@ This repository **is** the marketplace.
 
 ```
 lazarus/                 ← this directory IS the GitHub repo root
-├── .claude-plugin/marketplace.json        ← lists the plugin(s); "name" = cognitivecode (the @handle)
-└── plugins/lazarus/
-    ├── .claude-plugin/plugin.json          ← plugin manifest (no version → git SHA is the version)
-    ├── skills/{discover,repair,audit}/SKILL.md
-    ├── agents/repo-explorer.md
-    ├── hooks/hooks.json                     ← auto-loaded; do NOT also list it in plugin.json
-    └── scripts/check-destructive.sh         ← the guard (must stay executable / git mode 100755)
+├── .claude-plugin/marketplace.json        ← lists BOTH plugins; "name" = cognitivecode (the @handle)
+├── plugins/lazarus/                        ← core
+│   ├── .claude-plugin/plugin.json          ← plugin manifest (no version → git SHA is the version)
+│   ├── skills/{discover,repair,audit}/SKILL.md
+│   ├── agents/repo-explorer.md
+│   ├── hooks/hooks.json                     ← auto-loaded; do NOT also list it in plugin.json
+│   └── scripts/check-destructive.sh         ← the guard (must stay executable / git mode 100755)
+└── plugins/lazarus-backlog/                ← optional companion (audit's §11 → GitHub Issues)
+    ├── .claude-plugin/plugin.json
+    └── skills/issues/SKILL.md
 ```
 
 **Pushing updates.** `plugin.json` deliberately omits `version`, so Claude Code uses the git commit SHA — every push is a new version and `claude plugin update` pulls it, no number to bump. (If you'd rather have named releases, add `"version"` and bump it on every change — but if you set it and forget to bump, updates silently stop.)
