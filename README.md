@@ -107,6 +107,9 @@ flowchart LR
 > [!TIP]
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
 
+> [!TIP]
+> **Optional companion — `lazarus-backlog`.** After you run `audit`, turn its Top 10 Action Items into GitHub Issues with a separate, opt-in install: `/plugin install lazarus-backlog@cognitivecode`, then `/lazarus-backlog:issues`. It's a sibling plugin, so core stays zero-config — you only get `gh`-CLI behavior if you ask for it.
+
 ## 🛡️ The part that makes it safe to actually run
 
 Here's the headline. Letting an agent loose in an unfamiliar repo is terrifying because one confident-but-wrong command can wreck your machine. So Lazarus ships a **deterministic guard** — a `PreToolUse` hook that inspects every shell command *before* it runs and refuses the dangerous ones.
