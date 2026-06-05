@@ -1,7 +1,7 @@
 {
   "name": "lazarus",
   "displayName": "Lazarus",
-  "description": "Raise dead codebases. Onboard, repair, and audit legacy or unfamiliar repos: discover \u2192 approve \u2192 repair skills, a read-only explorer subagent, and a deterministic destructive-command guard.",
+  "description": "Raise dead codebases \u2014 or just tame an unfamiliar one. Onboard, repair, and audit any repo: discover \u2192 approve \u2192 repair skills, a read-only explorer subagent, and a deterministic destructive-command guard.",
   "author": {
     "name": "Cognitive Code",
     "email": "larry@cognitivecode.ai"

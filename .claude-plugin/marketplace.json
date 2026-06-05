@@ -9,7 +9,7 @@
     {
       "name": "lazarus",
       "source": "./plugins/lazarus",
-      "description": "Raise dead codebases \u2014 onboard, repair, and audit legacy repos behind a deterministic destructive-command guard."
+      "description": "Raise dead codebases \u2014 or any unfamiliar one. Onboard, repair, and audit any repo behind a deterministic destructive-command guard."
     }
   ]
 }

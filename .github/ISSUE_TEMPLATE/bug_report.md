@@ -17,9 +17,9 @@ What you thought would happen instead.
 3. Saw …
 
 **Which part?**
-- [ ] `legacy-discover` (discovery)
-- [ ] `legacy-repair` (repair)
-- [ ] `principal-audit` (audit)
+- [ ] `discover` (discovery)
+- [ ] `repair` (repair)
+- [ ] `audit` (audit)
 - [ ] the destructive-command guard (hook)
 - [ ] install / update / `/plugin …`
 - [ ] not sure

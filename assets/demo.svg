@@ -20,7 +20,7 @@
     <text x="30" y="108" fill="#6cb6ff">❯ make this legacy repo run locally</text>
 
     <!-- L3 discover -->
-    <text x="30" y="142" fill="#dcbdfb">🔍 /legacy-discover <tspan fill="#5b6675">· read-only · Plan Mode</tspan></text>
+    <text x="30" y="142" fill="#dcbdfb">🔍 /lazarus:discover <tspan fill="#5b6675">· read-only · Plan Mode</tspan></text>
     <text x="48" y="167" fill="#768390">• needs Node 18 · lockfile is npm-shrinkwrap</text>
     <text x="48" y="192" fill="#768390">• missing .env: <tspan fill="#e3b341">DATABASE_URL, JWT_SECRET</tspan></text>
     <text x="48" y="217" fill="#768390">• migrations never run on boot</text>
@@ -29,7 +29,7 @@
     <!-- L8 user -->
     <text x="30" y="276" fill="#6cb6ff">❯ execute the repair plan</text>
     <!-- repair -->
-    <text x="30" y="302" fill="#dcbdfb">🔧 /legacy-repair</text>
+    <text x="30" y="302" fill="#dcbdfb">🔧 /lazarus:repair</text>
     <text x="48" y="327" fill="#adbac7"><tspan fill="#57ab5a">✓</tspan> npm ci ......................... <tspan fill="#57ab5a">exit 0</tspan></text>
     <text x="48" y="352" fill="#adbac7"><tspan fill="#57ab5a">✓</tspan> wrote .env.example</text>
     <text x="48" y="377" fill="#adbac7"><tspan fill="#57ab5a">✓</tspan> migrations now run before boot</text>
