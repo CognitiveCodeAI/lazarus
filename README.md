@@ -2,7 +2,7 @@
 
 <img src="assets/banner2.png" alt="Lazarus — bring your codebase alive. A Claude Code plugin that discovers, repairs, and audits any codebase behind a deterministic guard." width="100%" />
 
-Point Claude at a repository and let Lazarus help make it: running, documented, and audited — behind a guard that **blocks** destructive commands before they ever run.
+Point Claude at a repository and let Lazarus help make it: Alive again, documented, and audited — behind a guard that **blocks** destructive commands before they ever run.
 
 <p>
 <img src="https://img.shields.io/badge/license-MIT-22c55e" alt="MIT License" />
