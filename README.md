@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="Lazarus — Raise your dead codebases. Safely. A Claude Code plugin." width="100%" />
+<img src="assets/banner2.png" alt="Lazarus — bring your codebase alive. A Claude Code plugin that discovers, repairs, and audits any codebase behind a deterministic guard." width="100%" />
 
 Point Claude at the repo nobody understands — it **walks again**: running, documented, and audited — behind a guard that **blocks** destructive commands before they ever run.
 
