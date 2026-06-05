@@ -36,7 +36,7 @@ if ! CMD=$(extract_command); then
   exit 2
 fi
 
-PATTERN='(rm -rf /|rm -rf ~|rm -rf \$HOME|:\(\)\{|mkfs\.|dd if=.*of=/dev/(sd|nvme|hd)|>\s*/dev/(sd|nvme|hd)|chmod -R 000|chown -R.*:.*/$|git push.*--force[^-]|git push.*-f([^-]|$)|git reset --hard origin|git clean -fdx|prisma migrate reset|prisma db push --force-reset|DROP\s+(DATABASE|TABLE|SCHEMA)|TRUNCATE\s+TABLE|DELETE\s+FROM\s+\w+\s*;|kubectl delete (ns|namespace|pv|pvc|deployment|statefulset)|docker system prune -af|docker volume rm|aws s3 rb|aws rds delete|aws ec2 terminate|terraform destroy|terraform apply.*-auto-approve|npm publish|pnpm publish|cargo publish|gh repo delete|firebase deploy --only hosting)'
+PATTERN='(rm -rf /|rm -rf ~|rm -rf \$HOME|:\(\)\{|mkfs\.|dd if=.*of=/dev/(sd|nvme|hd)|>\s*/dev/(sd|nvme|hd)|chmod -R 000|chown -R.*:.*/$|git push([[:space:]][^|;&]*)?[[:space:]](-f|--force(-with-lease)?)([[:space:]]|$)|git reset --hard origin|git clean -fdx|prisma migrate reset|prisma db push --force-reset|DROP\s+(DATABASE|TABLE|SCHEMA)|TRUNCATE\s+TABLE|DELETE\s+FROM\s+\w+\s*;|kubectl delete (ns|namespace|pv|pvc|deployment|statefulset)|docker system prune -af|docker volume rm|aws s3 rb|aws rds delete|aws ec2 terminate|terraform destroy|terraform apply.*-auto-approve|npm publish|pnpm publish|cargo publish|gh repo delete|firebase deploy --only hosting)'
 
 if printf '%s' "$CMD" | grep -iqE "$PATTERN"; then
   echo "BLOCKED: This command matches a destructive pattern that requires human confirmation. If you are sure this is intended, run it manually outside of Claude Code." >&2

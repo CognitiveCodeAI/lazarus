@@ -39,10 +39,16 @@ jobs:
           # destructive -> exit 2 (deny)
           assert "rm -rf /"          '{"tool_name":"Bash","tool_input":{"command":"rm -rf / --no-preserve-root"}}' 2
           assert "git push --force"  '{"tool_name":"Bash","tool_input":{"command":"git push origin main --force"}}' 2
+          assert "git push -f"       '{"tool_name":"Bash","tool_input":{"command":"git push -f origin main"}}' 2
+          assert "force-with-lease"  '{"tool_name":"Bash","tool_input":{"command":"git push --force-with-lease origin main"}}' 2
           assert "DROP TABLE"        '{"tool_name":"Bash","tool_input":{"command":"psql -c \"DROP TABLE users;\""}}' 2
           assert "terraform destroy" '{"tool_name":"Bash","tool_input":{"command":"terraform destroy -auto-approve"}}' 2
           # safe -> exit 0 (allow)
           assert "npm test"          '{"tool_name":"Bash","tool_input":{"command":"npm test"}}' 0
           assert "git push"          '{"tool_name":"Bash","tool_input":{"command":"git push origin feature"}}' 0
+          # regression: a branch/flag containing "-f" must NOT be read as a force-push
+          assert "branch has -f"     '{"tool_name":"Bash","tool_input":{"command":"git push -u origin skill-fixes-from-dogfood"}}' 0
+          assert "branch bug-fix"    '{"tool_name":"Bash","tool_input":{"command":"git push origin bug-fix"}}' 0
+          assert "--follow-tags"     '{"tool_name":"Bash","tool_input":{"command":"git push --follow-tags origin main"}}' 0
           # precision: destructive word only in a non-command field must NOT block
           assert "pattern in cwd"    '{"tool_name":"Bash","cwd":"/x/terraform destroy/","tool_input":{"command":"ls"}}' 0
