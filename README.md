@@ -16,22 +16,25 @@ Point Claude at the repo nobody understands — it **walks again**: running, doc
 
 ---
 
-You inherited a codebase. No README, no docs, the person who wrote it left in 2019, and it doesn't start. **Lazarus** is a Claude Code plugin that turns that knot into a running app — and writes down everything it learns so the next person (or the next you) doesn't suffer.
+**Lazarus** is a Claude Code plugin for working on a codebase with an AI agent you can actually trust. It does **two jobs** on *any* repo — yours, one you inherited, an open-source project, healthy or broken:
 
-It isn't only for *dead* code, though. Anything you don't already know cold — a service handed to you last week, an open-source project you want to contribute to, or a perfectly healthy repo you just need a confident read on — is fair game. The resurrection theme is the hook; the real job is **making an unfamiliar codebase legible, runnable, and safe to change.**
+- 🔧 **Make it run** — point it at code that won't start, or that you simply don't know yet. It investigates, proposes a plan with a concrete "done" checklist you approve, then works through the blockers until the app boots — and writes down what actually worked so the next person (or the next you) doesn't start from zero.
+- 🧭 **Assess it** — get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on or hand to a client. Nothing in the repo changes.
 
-## 🤔 Which one do I want?
+Both run behind a guard that blocks destructive commands before they ever run — and on the "make it run" side, **nothing changes until you approve the plan.** It'll resurrect a dead repo that won't even start (the namesake), but it's just as useful on healthy code you want made runnable, understood, or assessed.
 
-Three tools, two jobs — behind a guard that's always on. Pick your row:
+## 🧭 Which to reach for
 
-| You want to… | Run | What you get |
+Three skills in **two workflows**, with the guard across both. Match your situation:
+
+| Your situation | Reach for | What happens |
 |---|---|---|
-| 🔍 **Get an unfamiliar app running** locally | **`discover`** → *you approve* → **`repair`** | A plan with a concrete "done" checklist you ratify, then the blockers worked one by one until it boots — plus a `CLAUDE.md` recording what actually worked. |
-| 🧭 **Decide if it's worth owning** — keep, refactor, or rewrite | **`audit`** | One read-only report: architecture, risks, security, a phased plan. Changes nothing. |
-| 🛡️ **Not let the agent wreck your repo** | *(automatic — nothing to run)* | A guard blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more, the whole time. |
+| *"It won't run"* · *"I'm lost in this repo"* · *"I need to change it safely"* | 🔍 **`discover`** → *you approve* → 🔧 **`repair`** | `discover` investigates read-only and writes a plan with a runnable "done" checklist; you approve it; `repair` works the blockers until each one passes — recording what actually worked in `CLAUDE.md`. |
+| *"What shape is this in?"* · *"What do we fix first?"* · *"Maintain, refactor, or rewrite?"* | 🧭 **`audit`** | A read-only, 12-section principal-engineer report — architecture, risks, security, dependency health, a phased plan. Changes nothing; it's a deliverable you act on (or hand to a client). |
+| *"Don't let the agent wreck my machine"* | 🛡️ *(automatic)* | The guard blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more — the whole time. |
 
 > [!NOTE]
-> **The order, for getting something running:** `discover` first — it writes the plan — then **you approve**, then `repair` works it. **`audit` is standalone**: run it anytime, on any repo, even a healthy one.
+> **Two workflows, one gate.** `discover` and `repair` are a *single* workflow split into plan-then-execute — `repair` won't run without a `discover` plan to ratify, and your approval is the gate between them. `audit` is a *separate* workflow: a different question, its own report, never required by the other two.
 
 **New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it.
 
@@ -70,13 +73,13 @@ A scary repo to a running app — discover, you approve, repair, and the guard s
 <img src="assets/demo.svg" alt="Animated terminal: discover writes a plan, you approve, repair fixes the blockers, the guard blocks rm -rf /, and the app boots" width="100%" />
 </div>
 
-## 🗺️ The two paths
+## 🗺️ The two workflows
 
-Two independent paths. One makes the app run; the other tells you whether it's worth owning.
+Two independent workflows. One makes the code run; the other tells you what to do about it.
 
 ```mermaid
 flowchart LR
-    A["😵‍💫 a repo nobody<br/>understands"] --> B{what do<br/>you need?}
+    A["any codebase<br/>(broken or healthy)"] --> B{what do<br/>you need?}
 
     B -->|make it run| C["🔍 lazarus:discover<br/>read-only"]
     C --> D["📋 DISCOVERY.md<br/>plan + 'done' checklist"]
@@ -84,8 +87,8 @@ flowchart LR
     E --> F["🔧 lazarus:repair<br/>works the blockers"]
     F --> G["✅ running app +<br/>verified CLAUDE.md"]
 
-    B -->|own it?| H["🧭 lazarus:audit<br/>read-only"]
-    H --> I["📊 CODEBASE_AUDIT.md<br/>risks · refactor vs rewrite"]
+    B -->|assess it| H["🧭 lazarus:audit<br/>read-only"]
+    H --> I["📊 CODEBASE_AUDIT.md<br/>risks · what to fix first<br/>· refactor vs rewrite"]
 
     style A fill:#fee2e2,stroke:#ef4444,color:#111
     style G fill:#dcfce7,stroke:#22c55e,color:#111
@@ -99,7 +102,7 @@ flowchart LR
 |---|---|---|
 | **`/lazarus:discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* · *"help me get oriented"* | Investigates **read-only**, writes `DISCOVERY.md` — a plan plus a concrete *definition of done* — then **stops and waits for you**. |
 | **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first. |
-| **`/lazarus:audit`** | *"audit this codebase"* · *"refactor or rewrite?"* · *"is this safe to own?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased modernization plan. **Read-only**, standalone — no discovery needed. |
+| **`/lazarus:audit`** | *"review this code"* · *"audit this repo"* · *"what should we fix first?"* · *"refactor or rewrite?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased plan. **Read-only**, and a **separate workflow** — it doesn't need or feed discover/repair. |
 
 > [!TIP]
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
