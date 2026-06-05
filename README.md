@@ -2,7 +2,7 @@
 
 <img src="assets/banner.png" alt="Lazarus — Raise your dead codebases. Safely. A Claude Code plugin." width="100%" />
 
-Point Claude at the repo nobody understands — it **walks again**: running, documented, and audited — behind a guard that makes destructive commands *impossible*, not just discouraged.
+Point Claude at the repo nobody understands — it **walks again**: running, documented, and audited — behind a guard that **blocks** destructive commands before they ever run.
 
 <p>
 <img src="https://img.shields.io/badge/license-MIT-22c55e" alt="MIT License" />
@@ -30,6 +30,7 @@ Three tools, two jobs — behind a guard that's always on. Pick your row:
 | 🧭 **Decide if it's worth owning** — keep, refactor, or rewrite | **`audit`** | One read-only report: architecture, risks, security, a phased plan. Changes nothing. |
 | 🛡️ **Not let the agent wreck your repo** | *(automatic — nothing to run)* | A guard blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more, the whole time. |
 
+> [!NOTE]
 > **The order, for getting something running:** `discover` first — it writes the plan — then **you approve**, then `repair` works it. **`audit` is standalone**: run it anytime, on any repo, even a healthy one.
 
 **New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it.
@@ -53,8 +54,10 @@ In any `claude` session, run these **three commands — one at a time** (press E
 
 That's it. It installs **globally** — active in every repo you open. No file copying, no config, no API keys, no signup.
 
+> [!IMPORTANT]
 > **Don't skip step 3.** Installing *registers* the plugin, but its skills, hooks, and guard don't go live until you run `/reload-plugins` (or restart `claude`). If you tried a command below and nothing happened, this is almost always why.
 
+> [!WARNING]
 > **Use the full `https://…` URL, not the short `CognitiveCodeAI/lazarus` form.** The short form makes Claude Code clone over SSH; if you don't have GitHub SSH keys set up you'll get `Permission denied (publickey)` or `Host key verification failed`. The HTTPS URL needs no SSH and no auth — it just works.
 
 Then open a crusty repo, run `claude`, and *talk to it* (see below). 👇
@@ -98,26 +101,16 @@ flowchart LR
 | **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first. |
 | **`/lazarus:audit`** | *"audit this codebase"* · *"refactor or rewrite?"* · *"is this safe to own?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased modernization plan. **Read-only**, standalone — no discovery needed. |
 
+> [!TIP]
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
 
 ## 🛡️ The part that makes it safe to actually run
 
 Here's the headline. Letting an agent loose in an unfamiliar repo is terrifying because one confident-but-wrong command can wreck your machine. So Lazarus ships a **deterministic guard** — a `PreToolUse` hook that inspects every shell command *before* it runs and refuses the dangerous ones.
 
-```console
-# Claude, mid-repair, decides to "clean things up":
-$ rm -rf / --no-preserve-root
-
-🛑 BLOCKED: This command matches a destructive pattern that requires human
-   confirmation. If you are sure this is intended, run it manually outside
-   of Claude Code.
-
-# exit code 2 — the command never executed. Claude sees the refusal and adapts.
-```
+<div align="center"><img src="assets/guard.png" alt="Terminal: Claude runs 'rm -rf / --no-preserve-root', the Lazarus guard returns BLOCKED, exit 2, the command never executes" width="78%" /></div>
 
 This is **not** a politely-worded instruction Claude can talk itself out of. It's a hook that runs outside the model and returns "no." It blocks `rm -rf /`, `git push --force`, `git reset --hard origin`, `DROP TABLE`, `terraform destroy`, `kubectl delete`, `npm publish`, and ~25 more patterns — and it **composes** with any hooks you already have, so nothing of yours is overwritten.
-
-<div align="center"><img src="assets/guard.png" alt="The Lazarus guard blocking a destructive command" width="320" /></div>
 
 ---
 
