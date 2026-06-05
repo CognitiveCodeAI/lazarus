@@ -1,33 +1,36 @@
 ---
 name: repair
-description: Repair phase for any unfamiliar codebase — legacy, inherited, open-source, or otherwise. Consumes a ratified DISCOVERY.md and works through blockers until the Mechanical Definition of Done passes. Use this skill whenever the user wants to fix a codebase, make it run locally, stabilize a stack, work through the blockers identified by the discover skill, or execute against a ratified plan. Trigger on phrases like "fix this codebase", "make this run", "stabilize this app", "execute the repair plan", "work through the blockers", or any request to repair an app that has a DISCOVERY.md or a ratified plan. REQUIRES DISCOVERY.md to exist first — if it doesn't, run the discover skill instead.
+description: Phase 3 of the Lazarus flow — discover (understand) → audit (assess) → repair (act) — the only phase that changes code, on ANY codebase. Executes against a ratified plan from an upstream phase: either a DISCOVERY.md Mechanical Definition of Done ("make it run"), or a human-ratified subset of the CODEBASE_AUDIT.md Top 10 Action Items ("act on the assessment"). Works items in order until each one's acceptance check passes, logging everything to VERIFICATION_REPORT.md. Use this skill whenever the user wants to fix a codebase, make it run, stabilize a stack, or execute a ratified discovery/audit plan. Trigger on phrases like "fix this codebase", "make this run", "execute the repair plan", "act on the audit", "work the blockers", "implement the top action items". REQUIRES a ratified plan (DISCOVERY.md or a ratified set of audit items) — if neither exists, run discover (and usually audit) first.
 ---
 
 # Repair
 
-This skill executes against a ratified `DISCOVERY.md`. It is NOT a generic "fix the bug" skill — it requires upstream discovery to have produced a Mechanical Definition of Done, and it treats that DoD as the contract for completion.
+This skill is **phase 3 of the Lazarus flow: discover → audit → repair** — the only phase that changes code. It is NOT a generic "fix the bug" skill. It executes against a *ratified plan* produced upstream and treats that plan as the contract for completion. The plan comes from one of two sources:
+
+- **A `DISCOVERY.md` Mechanical Definition of Done** — the "make it run" path (`discover → repair`). The contract is the DoD's runnable assertions.
+- **A ratified subset of the `CODEBASE_AUDIT.md` Top 10 Action Items** — the "act on the assessment" path (`discover → audit → repair`). The contract is the items the human put in scope; each item's `validation command` is its acceptance check.
 
 ## Hard precondition
 
-`DISCOVERY.md` MUST exist at the repository root and contain a `## Proposed Mechanical Definition of Done` section. If it doesn't:
+A ratified plan MUST exist before repair starts — **either** a `DISCOVERY.md` with a `## Proposed Mechanical Definition of Done` section, **or** a `CODEBASE_AUDIT.md` with a set of Action Items the user has explicitly ratified for this pass. If neither exists:
 
 1. Stop. Do not proceed with repair.
-2. Tell the user the discover skill must run first.
+2. Tell the user the upstream phase must run first — `discover` (for the make-it-run path) or `discover → audit` (to act on an assessment).
 3. Offer to run it now.
 
-This precondition exists because agent repair without an upstream contract has a documented failure mode: the agent silently redefines success as it goes (see arxiv 2604.04580 — "Beyond Fixed Tests").
+This precondition exists because agent repair without an upstream contract has a documented failure mode: the agent silently redefines success as it goes (see arxiv 2604.04580 — "Beyond Fixed Tests"). When the plan is an audit subset, the human ratifying *which* items are in scope is what prevents the plan from ballooning into an unbounded rewrite.
 
 ## Workflow
 
 ### 1. Load and confirm the contract
 
-Read `DISCOVERY.md`. State back to the user, in two or three sentences:
+Read the ratified plan — `DISCOVERY.md` (and its Mechanical Definition of Done) and/or `CODEBASE_AUDIT.md` (and the Action Items the user ratified). State back to the user, in two or three sentences:
 
 - What the app appears to do
-- What the Mechanical Definition of Done requires
-- Which blockers will be worked through
+- What the contract requires — the DoD assertions, and/or the ratified audit items with their `validation command`s
+- Which items will be worked through, in what order
 
-Ask the user to confirm before starting. If they need to amend the DoD, do that now — never silently mid-repair.
+Ask the user to confirm before starting. For an audit-driven repair, **confirm the ratified item list explicitly** — only those items are in scope; everything else in the audit is out of scope this pass. If they need to amend the contract (DoD or item list), do that now — never silently mid-repair.
 
 ### 2. Recommend execution mode
 
@@ -37,9 +40,9 @@ Ask the user to confirm before starting. If they need to amend the DoD, do that 
 
 Make the recommendation explicitly. Do not silently switch modes.
 
-### 3. Execute blockers in dependency order
+### 3. Execute the plan in dependency order
 
-Work through blockers from `DISCOVERY.md` in this order, regardless of how they were listed:
+**Make-it-run path (from `DISCOVERY.md`):** work the blockers in this order, regardless of how they were listed:
 
 1. Environment/config issues (env vars, `.env.example`, paths)
 2. Dependency/install issues (package manager, lockfile, version conflicts)
@@ -48,7 +51,9 @@ Work through blockers from `DISCOVERY.md` in this order, regardless of how they 
 5. Test failures
 6. Main-flow integration
 
-After each fix, attempt the next step in the chain. If a fix doesn't work after two genuine attempts, mark the blocker `deferred-with-reason` and move on — don't grind.
+**Act-on-the-audit path (from ratified `CODEBASE_AUDIT.md` items):** work the ratified items in the order the user ratified (default: the audit's priority ranking), respecting dependencies the audit noted (e.g. "add tests before this refactor"). An item is complete only when its `validation command` passes — that is the per-item acceptance check; treat it exactly as you treat a DoD assertion.
+
+After each fix, attempt the next step/item. If a fix doesn't work after two genuine attempts, mark it `deferred-with-reason` and move on — don't grind.
 
 ### 4. Maintain VERIFICATION_REPORT.md
 
@@ -109,10 +114,10 @@ Do NOT promote `[INFERRED]` or `[ASSUMED]` claims. CLAUDE.md should be verified-
 
 Stop when EITHER:
 
-- Every DoD assertion in `DISCOVERY.md` has status PASS, or `deferred-with-reason` documented in `VERIFICATION_REPORT.md`
+- Every item in the contract — each DoD assertion from `DISCOVERY.md` and/or each ratified `CODEBASE_AUDIT.md` item — has status PASS (its `validation command` passes), or `deferred-with-reason` documented in `VERIFICATION_REPORT.md`
 - A blocker requires external dependency (credentials, third-party service, infrastructure) that you cannot create — stop and surface it
 
-Do NOT stop because "the app feels working." The DoD is the contract.
+Do NOT stop because "the app feels working." The ratified plan is the contract.
 
 ### 8. Final summary
 
@@ -148,7 +153,7 @@ Produce `IMPLEMENTATION_SUMMARY.md` at repo root:
 
 ## Anti-patterns to avoid
 
-- Starting repair without DISCOVERY.md — the whole architecture collapses
+- Starting repair without a ratified plan (a `DISCOVERY.md` DoD or a ratified set of audit items) — the whole architecture collapses
 - Modifying DISCOVERY.md in place — destroys the forensic record
 - Silently rewriting the DoD when something doesn't match — propose, don't rewrite
 - Treating "build passes" as success — agent PR research shows test failures, not build failures, are the dominant cause of bad repairs

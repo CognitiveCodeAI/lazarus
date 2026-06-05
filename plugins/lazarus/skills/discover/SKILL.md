@@ -1,20 +1,27 @@
 ---
 name: discover
-description: Read-only discovery phase for any unfamiliar codebase — legacy, freshly inherited, open-source you want to contribute to, or a healthy repo you simply don't know yet. Triages how the app is meant to run, what its intended behavior is, and what acceptance criteria would prove a repair is done. Use this skill whenever the user wants to onboard or get oriented in a repo, explore an unfamiliar codebase, understand how something is meant to work, scope an app, figure out why something won't start, identify blockers, or generate a ratifiable plan before any changes. Trigger on phrases like "explore this codebase", "help me get oriented", "I'm new to this repo", "onboard this repo", "what's preventing this from running", "make this run locally", "scope this app", or any request to investigate a codebase before changing it. This is the FIRST phase of repair work — always run this before the repair skill.
+description: Phase 1 of the Lazarus flow — discover (understand) → audit (assess) → repair (act) — on ANY codebase, healthy or broken, yours or unfamiliar. Read-only triage that establishes how the app is meant to run, its intended behavior, current state, and acceptance criteria, and writes DISCOVERY.md — the shared understanding that both the audit and the repair build on. Use this skill whenever the user wants to understand, get oriented in, onboard, scope, or investigate a codebase before assessing or changing it — or to start any discover→audit→repair run. Trigger on phrases like "explore this codebase", "help me get oriented", "understand this repo", "what does this do", "onboard this repo", "what's preventing this from running", "make this run locally", "scope this app", or any request to investigate a codebase before assessing or changing it. This is the FIRST phase — run it before audit or repair.
 ---
 
 # Discover
 
-This skill runs the read-only discovery phase that produces a ratifiable plan before any changes. It is designed for any repository where intended behavior must be inferred from the code itself rather than assumed — whether the code is old and broken, freshly inherited, open-source you're new to, or perfectly healthy but unfamiliar.
+This skill runs **phase 1 of the Lazarus flow: discover → audit → repair.** It is the read-only *understanding* phase — it establishes how the codebase works and is meant to run, and writes `DISCOVERY.md`, the shared understanding the later phases consume. It applies to any repository — old or new, broken or healthy, yours or unfamiliar — where behavior should be traced from the code rather than assumed.
 
 ## When this skill applies
 
-- The user wants to onboard or get oriented in an unfamiliar repo (broken or not)
+- The user wants to understand, get oriented in, or onboard a codebase (broken or not)
 - The user says the app won't run, won't build, or behaves unexpectedly
-- The user wants a plan before any code changes
-- The user is about to use the repair skill (this is its prerequisite)
+- The user wants a plan before any assessment or change
+- The user is starting a discover → audit → repair run (this is its first phase, and a prerequisite for both)
 
-If the user is asking for a long-term ownership review (modernization, refactor vs replace, architecture audit), use the `audit` skill instead.
+## Where this leads
+
+`DISCOVERY.md` is the entry point to the rest of the flow — not a dead end:
+
+- **To assess** the codebase (risks, architecture, refactor-vs-rewrite, a prioritized plan), hand off to the **`audit`** skill, which reads this `DISCOVERY.md` rather than re-deriving it.
+- **To just make it run**, hand off to the **`repair`** skill, which executes against the Mechanical Definition of Done below.
+
+Either way, discovery comes first.
 
 ## Workflow
 
@@ -106,7 +113,12 @@ Do NOT proceed to repair. After writing DISCOVERY.md, present a short summary in
 3. Resolve any open questions
 4. Approve, modify, or reject
 
-When the user approves, they should invoke the `repair` skill in a fresh prompt that references the ratified DISCOVERY.md.
+When the user approves, point them to the next phase in a fresh prompt that references the ratified `DISCOVERY.md`:
+
+- **`audit`** — to assess the codebase and get a prioritized, actionable plan (it builds on this `DISCOVERY.md`).
+- **`repair`** — to go straight to making it run against the Mechanical Definition of Done.
+
+Most runs go `discover → audit → repair`; the direct `discover → repair` path is the shortcut when the goal is purely "make it boot" and no assessment is wanted.
 
 ## Anti-patterns to avoid
 

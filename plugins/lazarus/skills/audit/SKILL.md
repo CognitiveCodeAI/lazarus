@@ -1,22 +1,28 @@
 ---
 name: audit
-description: Principal-engineer-grade audit of any codebase for ownership, modernization, or refactor-vs-replace decisions — useful on legacy systems, freshly inherited services, open-source projects, and healthy code you simply want a senior read on. Produces a strategic 12-section report covering architecture, risks, dependencies, testing, security, reliability, frontend/accessibility, and a phased modernization plan. Use this skill whenever the user wants to audit a codebase, do a principal engineer review, assess whether a codebase is safe to maintain or worth replacing, decide between refactor and rewrite, evaluate a system for ownership, or produce a strategic technical review. Trigger on phrases like "audit this codebase", "principal engineer review", "is this safe to maintain", "should we rewrite or refactor", "ownership assessment", "modernization plan", or any request for a strategic codebase evaluation. This is DIFFERENT from discover — that skill scopes immediate blockers; this skill produces a long-term ownership view.
+description: Phase 2 of the Lazarus flow — discover (understand) → audit (assess) → repair (act) — a principal-engineer-grade review of ANY codebase. Reads the DISCOVERY.md from phase 1 (if present) and produces a strategic 12-section CODEBASE_AUDIT.md covering architecture, risks, dependencies, testing, security, reliability, frontend/accessibility, and a phased plan whose ranked Action Items each carry a validation command — the actionable plan the repair phase executes. Use this skill whenever the user wants to audit, review, or assess a codebase, judge whether it's safe to maintain or worth replacing, decide refactor-vs-rewrite, or produce a strategic technical review — on healthy code or broken. Trigger on phrases like "audit this codebase", "review this code", "principal engineer review", "assess this repo", "is this safe to maintain", "should we rewrite or refactor", "what should we fix first", or any request for a strategic codebase evaluation. Runs after discover; hands its plan to repair.
 ---
 
 # Audit
 
-This skill produces an ownership-grade audit. It is read-only, evidence-based, and prioritizes serious engineering risk over cosmetic concerns. The output is a strategic document that should help the user decide whether to maintain, refactor, modernize, or replace a system. It applies to any codebase — old or new, broken or healthy.
+This skill is **phase 2 of the Lazarus flow: discover → audit → repair.** It is the read-only *assessment* phase — it turns the understanding from phase 1 into a prioritized, actionable plan. It is evidence-based, prioritizes serious engineering risk over cosmetic concerns, and applies to any codebase — old or new, broken or healthy. Its output, `CODEBASE_AUDIT.md`, is both a strategic document a human reads *and* the plan the repair phase executes.
+
+## Where this sits in the flow
+
+- **Reads** `DISCOVERY.md` from phase 1 if it exists (see step 2) — it builds on that understanding instead of re-deriving it.
+- **Produces** `CODEBASE_AUDIT.md`, whose §11 Top 10 Action Items each carry a `validation command` — these are repair-ready.
+- **Hands off** to `repair`, which executes a human-ratified subset of those items (see "Hand off to repair" at the end).
+
+You can **stop here** if all you wanted was the assessment. And if the goal is purely "make it boot" with no assessment, the shorter `discover → repair` path skips this phase.
 
 ## When this skill applies
 
-Use this skill when the user's question is **strategic**, not tactical:
+Use this skill when the user wants to **assess** a codebase, not just run it:
 
-- "I just inherited this — should I own it?"
+- "Review / audit this codebase" — what's wrong, what to fix first
 - "Is it worth modernizing or should we rewrite?"
 - "What's the actual risk profile here?"
-- "Help me make a refactor-vs-replace recommendation"
-
-If the user just wants the app to run locally, use `discover` followed by `repair` instead. This skill is the wrong tool for that.
+- "Give me a prioritized plan for this repo"
 
 ## Workflow
 
@@ -26,9 +32,11 @@ This skill is read-only. Confirm Plan Mode is active and do all investigation in
 
 One consequence to respect honestly: while read-only you **cannot run the test suite or the build**. If a finding or recommendation leans on whether tests pass or the build is green, see step 4 — you must either get the user to authorize running them, or tag the claim as not-executed and not treat it as load-bearing.
 
-### 2. Scope detection first
+### 2. Read DISCOVERY.md if it exists, then scope
 
-Before any deep inspection:
+If a `DISCOVERY.md` is present at the repo root (phase 1 ran), **read it first** and build on it: reuse its repository shape, intended behavior, setup commands, and current-state findings instead of re-deriving them. Carry its confidence tags forward honestly — a `[VERIFIED]` claim in DISCOVERY.md that you have *not* re-observed this pass is `[INFERRED]` to you (see step 4). If there is no `DISCOVERY.md`, the audit can still run standalone — do a quick read-only scope pass yourself, and optionally suggest running `discover` first for a fuller picture.
+
+Then scope the audit:
 
 - Measure the repo: file count, language breakdown, depth
 - Identify monorepo workspaces if any
@@ -135,6 +143,16 @@ If the repo has no CLAUDE.md, you MAY produce `CLAUDE.draft.md` at the root cont
 - Do-not-touch list (destructive operations specific to this repo)
 
 Mark it explicitly as a proposal. The user reviews and promotes to `CLAUDE.md` themselves. Do NOT write `CLAUDE.md` directly during the audit — that puts unreviewed guidance into durable form. (Research note: arxiv 2510.21413 found there is no established AGENTS.md/CLAUDE.md structure across OSS yet, with high variance in content. Anchor to OpenAI's commands-first example if asked for a template.)
+
+### 7. Hand off to repair
+
+The audit ends with a plan, not just a verdict. The §11 Top 10 Action Items — each with a `validation command` — are what the `repair` skill executes. Close the audit by offering that handoff explicitly:
+
+1. Present the ranked Action Items and ask the user to **ratify the scope** — which items (often the top few), in what order, are in scope for this repair pass. Do NOT assume the whole plan; the human chooses what to act on.
+2. The ratified subset becomes repair's contract, exactly like a Mechanical Definition of Done: each item is "done" only when its `validation command` passes.
+3. Tell the user to invoke `repair` in a fresh prompt referencing `CODEBASE_AUDIT.md` and the ratified item list.
+
+If the user only wanted the assessment, stop here — the handoff is an offer, not an obligation. Never start changing code from the audit skill itself; acting on the plan is repair's job, behind its own discipline.
 
 ## Anti-patterns to avoid
 

@@ -16,22 +16,29 @@ Point Claude at the repo nobody understands — it **walks again**: running, doc
 
 ---
 
-You inherited a codebase. No README, no docs, the person who wrote it left in 2019, and it doesn't start. **Lazarus** is a Claude Code plugin that turns that knot into a running app — and writes down everything it learns so the next person (or the next you) doesn't suffer.
+**Lazarus** is a Claude Code plugin that points Claude at *any* codebase — one you inherited, an open-source project, or your own active repo — and runs it through one disciplined flow: **understand it → assess it → improve it**, behind a guard that blocks destructive commands before they ever run.
 
-It isn't only for *dead* code, though. Anything you don't already know cold — a service handed to you last week, an open-source project you want to contribute to, or a perfectly healthy repo you just need a confident read on — is fair game. The resurrection theme is the hook; the real job is **making an unfamiliar codebase legible, runnable, and safe to change.**
+```text
+🔍 discover  →  🧭 audit  →  🔧 repair
+ understand      assess        act
+```
 
-## 🤔 Which one do I want?
+`discover` traces how the code actually works and how it's meant to run. `audit` turns that understanding into a principal-engineer review with a ranked, validated plan. `repair` executes the part *you approve* — and writes down everything it learns, so the next person (or the next you) doesn't start from zero. You ratify the plan before a single line changes.
 
-Three tools, two jobs — behind a guard that's always on. Pick your row:
+Yes, it'll resurrect a dead repo that won't even start — that's the namesake. But it's just as much for healthy code you simply want **understood, assessed, or improved** by an agent you can actually trust.
 
-| You want to… | Run | What you get |
-|---|---|---|
-| 🔍 **Get an unfamiliar app running** locally | **`discover`** → *you approve* → **`repair`** | A plan with a concrete "done" checklist you ratify, then the blockers worked one by one until it boots — plus a `CLAUDE.md` recording what actually worked. |
-| 🧭 **Decide if it's worth owning** — keep, refactor, or rewrite | **`audit`** | One read-only report: architecture, risks, security, a phased plan. Changes nothing. |
-| 🛡️ **Not let the agent wreck your repo** | *(automatic — nothing to run)* | A guard blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more, the whole time. |
+## 🔁 How it flows
+
+One flow, three phases, a guard across all of it. **Each phase writes a file the next one reads** — and you ratify the plan before anything changes.
+
+| Phase | Command | What it does | Hands forward |
+|---|---|---|---|
+| **1 · understand** | 🔍 `discover` | **Read-only.** Traces how the code works, how it's meant to run, and what's blocking it. | `DISCOVERY.md` |
+| **2 · assess** | 🧭 `audit` | **Read-only.** Reads the discovery, produces a principal-engineer review and a *ranked, validated* action plan. | `CODEBASE_AUDIT.md` |
+| **3 · act** | 🔧 `repair` | The **only** phase that changes code. Executes the items *you ratified* — each verified before it counts as done. | `VERIFICATION_REPORT.md` · `CLAUDE.md` |
 
 > [!NOTE]
-> **The order, for getting something running:** `discover` first — it writes the plan — then **you approve**, then `repair` works it. **`audit` is standalone**: run it anytime, on any repo, even a healthy one.
+> **Stop at any joint.** Just need to understand it? Stop after `discover`. Just want the assessment? Stop after `audit`. Want it fixed? Ratify the scope and let `repair` act. (Shortcut: `discover → repair` skips the assessment when the goal is purely "make it boot.") The 🛡️ **guard** runs the entire time, blocking `rm -rf /`, force-push, `DROP TABLE`, and ~25 more.
 
 **New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it.
 
@@ -70,36 +77,34 @@ A scary repo to a running app — discover, you approve, repair, and the guard s
 <img src="assets/demo.svg" alt="Animated terminal: discover writes a plan, you approve, repair fixes the blockers, the guard blocks rm -rf /, and the app boots" width="100%" />
 </div>
 
-## 🗺️ The two paths
+## 🗺️ The flow, end to end
 
-Two independent paths. One makes the app run; the other tells you whether it's worth owning.
+One spine — `discover → audit → repair` — with a human ratification gate before anything changes, and the guard wrapping every step. The shortcut (dotted) skips the assessment when you only need it to boot.
 
 ```mermaid
 flowchart LR
-    A["😵‍💫 a repo nobody<br/>understands"] --> B{what do<br/>you need?}
-
-    B -->|make it run| C["🔍 lazarus:discover<br/>read-only"]
-    C --> D["📋 DISCOVERY.md<br/>plan + 'done' checklist"]
-    D --> E(["🧑 you approve<br/>the checklist"])
-    E --> F["🔧 lazarus:repair<br/>works the blockers"]
-    F --> G["✅ running app +<br/>verified CLAUDE.md"]
-
-    B -->|own it?| H["🧭 lazarus:audit<br/>read-only"]
-    H --> I["📊 CODEBASE_AUDIT.md<br/>risks · refactor vs rewrite"]
+    A["any codebase<br/>(broken or healthy)"] --> C["🔍 discover<br/>understand · read-only"]
+    C --> D[("📄 DISCOVERY.md")]
+    D --> H["🧭 audit<br/>assess · read-only"]
+    H --> I[("📊 CODEBASE_AUDIT.md<br/>ranked + validated plan")]
+    I --> R(["🧑 you ratify<br/>the scope"])
+    R --> F["🔧 repair<br/>act · changes code"]
+    F --> G["✅ running / improved<br/>+ verified CLAUDE.md"]
+    D -.->|"shortcut: just make it boot"| R
 
     style A fill:#fee2e2,stroke:#ef4444,color:#111
-    style G fill:#dcfce7,stroke:#22c55e,color:#111
     style I fill:#e0f2fe,stroke:#0ea5e9,color:#111
-    style E fill:#fef9c3,stroke:#eab308,color:#111
+    style R fill:#fef9c3,stroke:#eab308,color:#111
+    style G fill:#dcfce7,stroke:#22c55e,color:#111
 ```
 
 **Type the command, or just describe what you want** — both work. The slash command is the fast path; plain English triggers the same skill. (Plugin commands are namespaced, so they're `/lazarus:…` — type `/lazarus` and all three show up together.)
 
-| Command | Also triggers on… | What it does |
-|---|---|---|
-| **`/lazarus:discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* · *"help me get oriented"* | Investigates **read-only**, writes `DISCOVERY.md` — a plan plus a concrete *definition of done* — then **stops and waits for you**. |
-| **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first. |
-| **`/lazarus:audit`** | *"audit this codebase"* · *"refactor or rewrite?"* · *"is this safe to own?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased modernization plan. **Read-only**, standalone — no discovery needed. |
+| Command | Phase | Also triggers on… | What it does |
+|---|---|---|---|
+| 🔍 **`/lazarus:discover`** | understand | *"help me get oriented"* · *"what does this do?"* · *"make this run locally"* | Read-only. Traces the repo and writes `DISCOVERY.md` — shape, intended behavior, blockers, and a runnable *Definition of Done*. Then **stops and waits for you**. |
+| 🧭 **`/lazarus:audit`** | assess | *"review this code"* · *"audit this repo"* · *"what should we fix first?"* · *"refactor or rewrite?"* | Read-only. Reads the discovery, writes a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility — ending in a **ranked plan whose items each carry a validation command**. |
+| 🔧 **`/lazarus:repair`** | act | *"execute the plan"* · *"act on the audit"* · *"fix this codebase"* · *"work the blockers"* | Executes the items **you ratified** (from the discovery DoD *or* the audit plan), verifies each one, logs to `VERIFICATION_REPORT.md`, and promotes what truly worked into `CLAUDE.md`. |
 
 > [!TIP]
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
