@@ -18,7 +18,8 @@ jobs:
         run: |
           for f in .claude-plugin/marketplace.json \
                    plugins/lazarus/.claude-plugin/plugin.json \
-                   plugins/lazarus/hooks/hooks.json; do
+                   plugins/lazarus/hooks/hooks.json \
+                   plugins/lazarus-backlog/.claude-plugin/plugin.json; do
             jq empty "$f" && echo "ok: $f"
           done
 
