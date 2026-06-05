@@ -1,9 +1,9 @@
 ---
-name: legacy-repair
-description: Repair phase for legacy or unfamiliar codebases. Consumes a ratified DISCOVERY.md and works through blockers until the Mechanical Definition of Done passes. Use this skill whenever the user wants to fix a legacy app, make a codebase run locally, stabilize a broken stack, work through the blockers identified by the legacy-discover skill, or execute against a ratified plan. Trigger on phrases like "fix this codebase", "make this run", "stabilize this app", "execute the repair plan", "work through the blockers", or any request to repair an app that has a DISCOVERY.md or a ratified plan. REQUIRES DISCOVERY.md to exist first — if it doesn't, run the legacy-discover skill instead.
+name: repair
+description: Repair phase for any unfamiliar codebase — legacy, inherited, open-source, or otherwise. Consumes a ratified DISCOVERY.md and works through blockers until the Mechanical Definition of Done passes. Use this skill whenever the user wants to fix a codebase, make it run locally, stabilize a stack, work through the blockers identified by the discover skill, or execute against a ratified plan. Trigger on phrases like "fix this codebase", "make this run", "stabilize this app", "execute the repair plan", "work through the blockers", or any request to repair an app that has a DISCOVERY.md or a ratified plan. REQUIRES DISCOVERY.md to exist first — if it doesn't, run the discover skill instead.
 ---
 
-# Legacy Repair
+# Repair
 
 This skill executes against a ratified `DISCOVERY.md`. It is NOT a generic "fix the bug" skill — it requires upstream discovery to have produced a Mechanical Definition of Done, and it treats that DoD as the contract for completion.
 
@@ -12,7 +12,7 @@ This skill executes against a ratified `DISCOVERY.md`. It is NOT a generic "fix 
 `DISCOVERY.md` MUST exist at the repository root and contain a `## Proposed Mechanical Definition of Done` section. If it doesn't:
 
 1. Stop. Do not proceed with repair.
-2. Tell the user the legacy-discover skill must run first.
+2. Tell the user the discover skill must run first.
 3. Offer to run it now.
 
 This precondition exists because agent repair without an upstream contract has a documented failure mode: the agent silently redefines success as it goes (see arxiv 2604.04580 — "Beyond Fixed Tests").

@@ -18,6 +18,8 @@ Point Claude at the repo nobody understands — it **walks again**: running, doc
 
 You inherited a codebase. No README, no docs, the person who wrote it left in 2019, and it doesn't start. **Lazarus** is a Claude Code plugin that turns that knot into a running app — and writes down everything it learns so the next person (or the next you) doesn't suffer.
 
+It isn't only for *dead* code, though. Anything you point it at that you don't already know cold — a service handed to you last week, an open-source project you want to contribute to, or a perfectly healthy repo you just need a confident read on — is fair game. The resurrection theme is the hook; the actual job is **making an unfamiliar codebase legible, runnable, and safe to change.**
+
 ```
 🔍  "make this run locally"      →  a plan you approve, then a working app
 🧭  "should I even own this?"    →  a principal-engineer audit
@@ -54,7 +56,7 @@ Then open a crusty repo, run `claude`, and *talk to it* (see below). 👇
 A scary repo to a running app — discover, you approve, repair, and the guard swatting a destructive command mid-run:
 
 <div align="center">
-<img src="assets/demo.svg" alt="Animated terminal: legacy-discover writes a plan, you approve, legacy-repair fixes the blockers, the guard blocks rm -rf /, and the app boots" width="100%" />
+<img src="assets/demo.svg" alt="Animated terminal: discover writes a plan, you approve, repair fixes the blockers, the guard blocks rm -rf /, and the app boots" width="100%" />
 </div>
 
 ## 🗺️ The two paths
@@ -65,13 +67,13 @@ Two independent paths. One makes the app run; the other tells you whether it's w
 flowchart LR
     A["😵‍💫 a repo nobody<br/>understands"] --> B{what do<br/>you need?}
 
-    B -->|make it run| C["🔍 legacy-discover<br/>read-only"]
+    B -->|make it run| C["🔍 lazarus:discover<br/>read-only"]
     C --> D["📋 DISCOVERY.md<br/>plan + 'done' checklist"]
     D --> E(["🧑 you approve<br/>the checklist"])
-    E --> F["🔧 legacy-repair<br/>works the blockers"]
+    E --> F["🔧 lazarus:repair<br/>works the blockers"]
     F --> G["✅ running app +<br/>verified CLAUDE.md"]
 
-    B -->|own it?| H["🧭 principal-audit<br/>read-only"]
+    B -->|own it?| H["🧭 lazarus:audit<br/>read-only"]
     H --> I["📊 CODEBASE_AUDIT.md<br/>risks · refactor vs rewrite"]
 
     style A fill:#fee2e2,stroke:#ef4444,color:#111
@@ -80,15 +82,15 @@ flowchart LR
     style E fill:#fef9c3,stroke:#eab308,color:#111
 ```
 
-**Type the command, or just describe what you want** — both work. The slash command is the fast path; plain English triggers the same skill.
+**Type the command, or just describe what you want** — both work. The slash command is the fast path; plain English triggers the same skill. (Plugin commands are namespaced, so they're `/lazarus:…` — type `/lazarus` and all three show up together.)
 
 | Command | Also triggers on… | What it does |
 |---|---|---|
-| **`/legacy-discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* | Investigates **read-only**, writes `DISCOVERY.md` — a plan plus a concrete *definition of done* — then **stops and waits for you**. |
-| **`/legacy-repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first. |
-| **`/principal-audit`** | *"audit this codebase"* · *"refactor or rewrite?"* · *"is this safe to own?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, a phased modernization plan. **Read-only**, standalone — no discovery needed. |
+| **`/lazarus:discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* · *"help me get oriented"* | Investigates **read-only**, writes `DISCOVERY.md` — a plan plus a concrete *definition of done* — then **stops and waits for you**. |
+| **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first. |
+| **`/lazarus:audit`** | *"audit this codebase"* · *"refactor or rewrite?"* · *"is this safe to own?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased modernization plan. **Read-only**, standalone — no discovery needed. |
 
-> **Not just broken legacy code.** Any unfamiliar repo qualifies — a service you just inherited, an open-source project you want to contribute to, or a perfectly healthy codebase you simply want a principal-level read on. `/principal-audit` is just as useful on code that already runs.
+> **It's not just for broken or legacy code.** *Any* repo you don't fully know qualifies — a service you just inherited, an open-source project you want to contribute to, or a perfectly healthy codebase you simply want a senior read on. "Lazarus" is the vibe, not a requirement that the code be dead; `/lazarus:audit` is just as useful on code that already runs.
 >
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
 
@@ -160,7 +162,7 @@ The design choices aren't arbitrary; each traces to a specific 2026 empirical fi
 - **Test-pass, not just build-pass, as the bar** — fix-related agent PRs fail most often at test cases, not builds *(arXiv 2602.00164)*.
 - **Definition-of-Done as evolving constraints** — repo repair is "search over evolving behavioral constraints," not optimization under fixed tests *(arXiv 2604.04580)*.
 - **Bias against rewrite** — un-merged agent PRs tend to be the large, sprawling ones; incremental beats rewrite on average *(arXiv 2601.15195)*.
-- **Cheap read-only exploration on Haiku** — text-based exploration hits ~83% answer quality at ~10× lower token cost *(arXiv 2603.27277)*.
+- **Cheap read-only exploration on Haiku** — text-based exploration is reported to reach ~83% answer quality at ~10× lower token cost *(arXiv 2603.27277)*.
 - **CLAUDE.md is normative, not community-converged** — there's still no settled standard, so the toolkit anchors to a commands-first structure *(arXiv 2510.21413)*.
 
 </details>
@@ -173,9 +175,9 @@ The design choices aren't arbitrary; each traces to a specific 2026 empirical fi
 ```
 lazarus/
 ├── skills/
-│   ├── legacy-discover/    🔍 read-only triage → DISCOVERY.md (+ Definition of Done)
-│   ├── legacy-repair/      🔧 works blockers → VERIFICATION_REPORT.md → verified CLAUDE.md
-│   └── principal-audit/    🧭 12-section strategic CODEBASE_AUDIT.md (read-only)
+│   ├── discover/    🔍 read-only triage → DISCOVERY.md (+ Definition of Done)
+│   ├── repair/      🔧 works blockers → VERIFICATION_REPORT.md → verified CLAUDE.md
+│   └── audit/       🧭 12-section strategic CODEBASE_AUDIT.md (read-only)
 ├── agents/
 │   └── repo-explorer       🗺️ read-only, Haiku-tier subagent for mapping huge repos cheaply
 ├── hooks/hooks.json        🛡️ wires the guard as a PreToolUse hook
@@ -190,9 +192,9 @@ The `repo-explorer` subagent is deliberately restricted (read-only tool allowlis
 ## ❓ FAQ
 
 <details>
-<summary><b>I installed it but <code>/legacy-discover</code> (or the guard) does nothing. Why?</b></summary>
+<summary><b>I installed it but <code>/lazarus:discover</code> (or the guard) does nothing. Why?</b></summary>
 <br/>
-You almost certainly skipped <code>/reload-plugins</code>. Installing registers the plugin; its skills, hooks, and guard only go live after you run <code>/reload-plugins</code> (or restart <code>claude</code>) in that session. Run it once and the <code>/legacy-discover</code>, <code>/legacy-repair</code>, and <code>/principal-audit</code> commands appear.
+You almost certainly skipped <code>/reload-plugins</code>. Installing registers the plugin; its skills, hooks, and guard only go live after you run <code>/reload-plugins</code> (or restart <code>claude</code>) in that session. Run it once and the <code>/lazarus:discover</code>, <code>/lazarus:repair</code>, and <code>/lazarus:audit</code> commands appear.
 </details>
 
 <details>
@@ -233,7 +235,7 @@ Three commands, **one at a time**, in any `claude` session:
 /reload-plugins
 ```
 
-…then open any repo and run **`/legacy-discover`** or **`/principal-audit`** — or just say **"make this run locally."**
+…then open any repo and run **`/lazarus:discover`** or **`/lazarus:audit`** — or just say **"make this run locally."**
 
 If it saved you an afternoon, a ⭐ helps other people find it.
 
@@ -251,7 +253,7 @@ lazarus/                 ← this directory IS the GitHub repo root
 ├── .claude-plugin/marketplace.json        ← lists the plugin(s); "name" = cognitivecode (the @handle)
 └── plugins/lazarus/
     ├── .claude-plugin/plugin.json          ← plugin manifest (no version → git SHA is the version)
-    ├── skills/{legacy-discover,legacy-repair,principal-audit}/SKILL.md
+    ├── skills/{discover,repair,audit}/SKILL.md
     ├── agents/repo-explorer.md
     ├── hooks/hooks.json                     ← auto-loaded; do NOT also list it in plugin.json
     └── scripts/check-destructive.sh         ← the guard (must stay executable / git mode 100755)

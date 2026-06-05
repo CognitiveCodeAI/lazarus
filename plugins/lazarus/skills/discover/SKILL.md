@@ -1,26 +1,28 @@
 ---
-name: legacy-discover
-description: Discovery phase for unfamiliar or legacy codebases. Triages what's preventing the app from running, what the intended behavior is, and what acceptance criteria would prove repair is done. Use this skill whenever the user wants to onboard a codebase, explore an unfamiliar repo, scope a legacy app, figure out why something won't start, identify blockers, or generate a ratifiable plan before any repair work begins. Trigger on phrases like "explore this codebase", "what's preventing this from running", "make this run locally", "onboard this repo", "discovery phase", "scope this legacy app", or any request to investigate a codebase before changing it. This is the FIRST phase of legacy work — always run this before the legacy-repair skill.
+name: discover
+description: Read-only discovery phase for any unfamiliar codebase — legacy, freshly inherited, open-source you want to contribute to, or a healthy repo you simply don't know yet. Triages how the app is meant to run, what its intended behavior is, and what acceptance criteria would prove a repair is done. Use this skill whenever the user wants to onboard or get oriented in a repo, explore an unfamiliar codebase, understand how something is meant to work, scope an app, figure out why something won't start, identify blockers, or generate a ratifiable plan before any changes. Trigger on phrases like "explore this codebase", "help me get oriented", "I'm new to this repo", "onboard this repo", "what's preventing this from running", "make this run locally", "scope this app", or any request to investigate a codebase before changing it. This is the FIRST phase of repair work — always run this before the repair skill.
 ---
 
-# Legacy Discovery
+# Discover
 
-This skill runs the read-only discovery phase that produces a ratifiable plan before any repair work begins. It is designed for unfamiliar or legacy repositories where intended behavior must be inferred from the code itself rather than assumed.
+This skill runs the read-only discovery phase that produces a ratifiable plan before any changes. It is designed for any repository where intended behavior must be inferred from the code itself rather than assumed — whether the code is old and broken, freshly inherited, open-source you're new to, or perfectly healthy but unfamiliar.
 
 ## When this skill applies
 
-- The user wants to onboard an unfamiliar repo
+- The user wants to onboard or get oriented in an unfamiliar repo (broken or not)
 - The user says the app won't run, won't build, or behaves unexpectedly
 - The user wants a plan before any code changes
-- The user is about to use the legacy-repair skill (this is its prerequisite)
+- The user is about to use the repair skill (this is its prerequisite)
 
-If the user is asking for a long-term ownership review (modernization, refactor vs replace, architecture audit), use the `principal-audit` skill instead.
+If the user is asking for a long-term ownership review (modernization, refactor vs replace, architecture audit), use the `audit` skill instead.
 
 ## Workflow
 
 ### 1. Enter Plan Mode
 
 Confirm you are in Plan Mode before starting. Plan Mode enforces read-only access at the tool level — no edits, no shell commands that modify state, no git operations. If the user has not entered Plan Mode, ask them to press Shift+Tab twice or type `/plan`, then proceed.
+
+Note on the one write this skill makes: Plan Mode blocks writes too, so you cannot create `DISCOVERY.md` while still in Plan Mode. Do all investigation read-only, then present the plan via `ExitPlanMode`. The single file write in step 5 happens only *after* the user approves and you have left Plan Mode — it is not a license to make code edits, which remain out of scope for this skill.
 
 ### 2. Identify scope
 
@@ -104,7 +106,7 @@ Do NOT proceed to repair. After writing DISCOVERY.md, present a short summary in
 3. Resolve any open questions
 4. Approve, modify, or reject
 
-When the user approves, they should invoke the `legacy-repair` skill in a fresh prompt that references the ratified DISCOVERY.md.
+When the user approves, they should invoke the `repair` skill in a fresh prompt that references the ratified DISCOVERY.md.
 
 ## Anti-patterns to avoid
 

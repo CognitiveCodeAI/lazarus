@@ -1,6 +1,6 @@
 ---
 name: repo-explorer
-description: Read-only codebase explorer for mapping unfamiliar or large repositories. Spawn this subagent when the main session needs to investigate repository structure, find entry points, trace execution paths, locate configuration, or identify dependencies WITHOUT polluting the main session's context window. Especially valuable during legacy-discover and principal-audit workflows on large repos (over ~2000 files). Returns concise structured summaries, never raw file dumps. Trigger when the main agent says "explore this codebase", "map this repository", "find entry points", "trace this execution path", or any read-only investigation that would consume significant context if done inline.
+description: Read-only codebase explorer for mapping unfamiliar or large repositories. Spawn this subagent when the main session needs to investigate repository structure, find entry points, trace execution paths, locate configuration, or identify dependencies WITHOUT polluting the main session's context window. Especially valuable during discover and audit workflows on large repos (over ~2000 files). Returns concise structured summaries, never raw file dumps. Trigger when the main agent says "explore this codebase", "map this repository", "find entry points", "trace this execution path", or any read-only investigation that would consume significant context if done inline.
 tools: Read, Grep, Glob, LS, WebFetch
 model: haiku
 ---
