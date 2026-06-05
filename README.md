@@ -18,13 +18,21 @@ Point Claude at the repo nobody understands — it **walks again**: running, doc
 
 You inherited a codebase. No README, no docs, the person who wrote it left in 2019, and it doesn't start. **Lazarus** is a Claude Code plugin that turns that knot into a running app — and writes down everything it learns so the next person (or the next you) doesn't suffer.
 
-It isn't only for *dead* code, though. Anything you point it at that you don't already know cold — a service handed to you last week, an open-source project you want to contribute to, or a perfectly healthy repo you just need a confident read on — is fair game. The resurrection theme is the hook; the actual job is **making an unfamiliar codebase legible, runnable, and safe to change.**
+It isn't only for *dead* code, though. Anything you don't already know cold — a service handed to you last week, an open-source project you want to contribute to, or a perfectly healthy repo you just need a confident read on — is fair game. The resurrection theme is the hook; the real job is **making an unfamiliar codebase legible, runnable, and safe to change.**
 
-```
-🔍  "make this run locally"      →  a plan you approve, then a working app
-🧭  "should I even own this?"    →  a principal-engineer audit
-🛡️  the whole time               →  a guard that blocks rm -rf, force-push, DROP TABLE…
-```
+## 🤔 Which one do I want?
+
+Three tools, two jobs — behind a guard that's always on. Pick your row:
+
+| You want to… | Run | What you get |
+|---|---|---|
+| 🔍 **Get an unfamiliar app running** locally | **`discover`** → *you approve* → **`repair`** | A plan with a concrete "done" checklist you ratify, then the blockers worked one by one until it boots — plus a `CLAUDE.md` recording what actually worked. |
+| 🧭 **Decide if it's worth owning** — keep, refactor, or rewrite | **`audit`** | One read-only report: architecture, risks, security, a phased plan. Changes nothing. |
+| 🛡️ **Not let the agent wreck your repo** | *(automatic — nothing to run)* | A guard blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more, the whole time. |
+
+> **The order, for getting something running:** `discover` first — it writes the plan — then **you approve**, then `repair` works it. **`audit` is standalone**: run it anytime, on any repo, even a healthy one.
+
+**New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it.
 
 ## ⚡ Install (no signup, no SSH keys)
 
@@ -90,8 +98,6 @@ flowchart LR
 | **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first. |
 | **`/lazarus:audit`** | *"audit this codebase"* · *"refactor or rewrite?"* · *"is this safe to own?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased modernization plan. **Read-only**, standalone — no discovery needed. |
 
-> **It's not just for broken or legacy code.** *Any* repo you don't fully know qualifies — a service you just inherited, an open-source project you want to contribute to, or a perfectly healthy codebase you simply want a senior read on. "Lazarus" is the vibe, not a requirement that the code be dead; `/lazarus:audit` is just as useful on code that already runs.
->
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
 
 ## 🛡️ The part that makes it safe to actually run
@@ -206,7 +212,13 @@ Discovery and audit are read-only (Plan Mode). Repair changes code — but only 
 <details>
 <summary><b>Do I need <code>jq</code> installed?</b></summary>
 <br/>
-No. The guard uses whichever of <code>jq</code> / <code>python3</code> / <code>python</code> / <code>perl</code> is present (macOS ships <code>python3</code> + <code>perl</code>). If none are, it blocks bash commands until you install one — it never silently lets them through.
+No. The guard uses whichever of <code>jq</code> / <code>python3</code> / <code>python</code> / <code>perl</code> is present. Stock macOS and most Linux ship <code>perl</code> with the core <code>JSON::PP</code> module, so the guard works out of the box even with no <code>jq</code> and no Python. If <em>none</em> of the four are present, it blocks bash commands until you install one — it never silently lets them through.
+</details>
+
+<details>
+<summary><b>Does it work on Windows?</b></summary>
+<br/>
+Use <b>WSL</b>. The guard is a bash hook (<code>scripts/check-destructive.sh</code>), so it needs a Unix-like shell with one of <code>jq</code>/<code>python3</code>/<code>python</code>/<code>perl</code>. Under WSL (or Git Bash) everything works; in a bare Windows <code>cmd</code>/PowerShell session the hook can't execute, which means no protection — so run Lazarus from WSL. (The badges up top say macOS · Linux for this reason.)
 </details>
 
 <details>
