@@ -97,6 +97,8 @@ The repair phase is done when ALL of these check:
 [Things the human must decide before repair starts. Be specific.]
 ```
 
+Note on the smoke check for **hardware- or service-coupled apps**: if the one end-to-end assertion can't be run without something you can't supply — a physical device, a paid/external API, real credentials, a running database — say so explicitly. Make it a ratification Open Question and mark that DoD item `requires: <X>` instead of a plain checkbox. Never fake a smoke check or silently drop it; "this needs the camera / DB / API key to verify" is the correct, honest output, not a green check you didn't earn.
+
 ### 6. Stop for ratification
 
 Do NOT proceed to repair. After writing DISCOVERY.md, present a short summary in chat and ask the user to:
