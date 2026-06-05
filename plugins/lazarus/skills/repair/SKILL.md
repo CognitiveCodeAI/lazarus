@@ -50,6 +50,8 @@ Work through blockers from `DISCOVERY.md` in this order, regardless of how they 
 
 After each fix, attempt the next step in the chain. If a fix doesn't work after two genuine attempts, mark the blocker `deferred-with-reason` and move on — don't grind.
 
+Building and running generates files — the **build output directory** (read its name from the build config's `outDir` / `build.outDir` / `outputDir`; do *not* assume `dist/` — projects override it, e.g. to `build/`), plus `node_modules`, caches, and coverage. Before you stage or commit any repair, confirm those generated directories are gitignored, so the repair never sweeps build output into version control. A *lockfile* that didn't exist before is the opposite — keep it; it pins the dependency versions you just got working.
+
 ### 4. Maintain VERIFICATION_REPORT.md
 
 For every assertion in the DoD, log to `VERIFICATION_REPORT.md` at the repo root:
@@ -155,6 +157,7 @@ Produce `IMPLEMENTATION_SUMMARY.md` at repo root:
 - Promoting unverified claims to CLAUDE.md — pollutes durable guidance with assumptions
 - Continuing to grind on a blocker after two genuine attempts — mark deferred and move on
 - Removing business logic just because it looks old or doesn't match modern patterns
+- Committing generated build artifacts — the build writes to the config's `outDir` (read it; don't assume `dist/`); gitignore that folder plus `node_modules` and caches before staging, so a repair never commits build output (a newly-created *lockfile*, though, you keep)
 
 ## Research grounding
 
