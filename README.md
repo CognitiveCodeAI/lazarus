@@ -263,7 +263,21 @@ Three commands, **one at a time**, in any `claude` session:
 
 …then open any repo and run **`/lazarus:discover`** or **`/lazarus:audit`** — or just say **"make this run locally."**
 
-If it saved you an afternoon, a ⭐ helps other people find it.
+## ⭐ Star this repo (it decides what comes next)
+
+<div align="center">
+
+**If Lazarus saved you an afternoon, drop a star.** ⭐
+
+</div>
+
+It's a 1-second click, and it does two things: it helps the next person staring at a dead repo actually *find* this, and it tells me whether to keep building in the open.
+
+I have **more Claude Code tools ready to ship** — I'm releasing them based on real signal. Stars and activity here are how I gauge whether people want them. So a star isn't just a thank-you; it's a vote for the next one.
+
+> 🔜 **Next up:** more is on the way — ⭐ star and [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) to influence what ships first.
+
+> 💬 Got an idea, a bug, or a repo Lazarus choked on? [Open an issue](https://github.com/CognitiveCodeAI/lazarus/issues) or start a [discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) — I read every one.
 
 ---
 
