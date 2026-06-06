@@ -10,7 +10,7 @@ Run from a clean clone of the exact commit you intend to tag.
 
 ```bash
 claude plugin validate ./plugins/lazarus
-claude plugin validate ./plugins/lazarus-backlog
+claude plugin validate ./plugins/lazarus-github
 claude plugin validate .
 # only expected warning: "No version specified"
 ```
@@ -27,7 +27,7 @@ CI runs `shellcheck` plus block/allow/precision assertions on `scripts/check-des
 SMOKE=$(mktemp -d); REPO="$(pwd)"
 HOME="$SMOKE" claude plugin marketplace add "$REPO"
 HOME="$SMOKE" claude plugin install lazarus@cognitivecode
-HOME="$SMOKE" claude plugin install lazarus-backlog@cognitivecode
+HOME="$SMOKE" claude plugin install lazarus-github@cognitivecode
 HOME="$SMOKE" claude plugin list      # expect every plugin: Status ✔ enabled
 # teardown — use `rm -r`, NOT `rm -rf`: the guard blocks `rm -rf <path>`
 rm -r "$SMOKE"

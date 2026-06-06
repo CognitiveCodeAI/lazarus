@@ -66,7 +66,7 @@ Every design choice traces to a specific way agents fail:
 The repository *is* a Claude Code plugin marketplace with a small, growing family:
 
 - **`lazarus`** — the core plugin: the three skills, a read-only Haiku-tier explorer subagent (`repo-explorer`) for mapping huge repos cheaply, and the guard hook.
-- **`lazarus-backlog`** — an optional companion plugin that turns an audit's "Top 10 Action Items" into GitHub Issues (it ratifies before creating, and de-duplicates so re-running never makes duplicates).
+- **`lazarus-github`** — an optional companion plugin that turns an audit's "Top 10 Action Items" into GitHub Issues (it ratifies before creating, and de-duplicates so re-running never makes duplicates).
 
 The design principle: **anything outward-facing ships as an opt-in sibling plugin, never bundled into core.** That keeps the three-command core install zero-config — if you don't install the companion, its dependencies and failure modes never reach you. Future integrations (Linear, Jira, Slack) would be siblings of the same shape. The ecosystem grows by addition, not by feature flags.
 
@@ -76,7 +76,7 @@ Install (three commands, one at a time, in a `claude` session):
 /plugin install lazarus@cognitivecode
 /reload-plugins
 ```
-Commands are namespaced: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit`, and `/lazarus-backlog:issues`.
+Commands are namespaced: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit`, and `/lazarus-github:issues`.
 
 ---
 
@@ -134,6 +134,6 @@ You don't have to be a principal engineer to get a principal engineer's read. Th
 - **Two workflows:** `discover → (you approve) → repair` ("make it run"); `audit` ("assess it," standalone).
 - **The guard:** deterministic `PreToolUse` hook, reads JSON on stdin, blocks ~25+ destructive patterns, fails closed, exit 2 = deny.
 - **Safety pillars:** confidence tags, mechanical Definition of Done, forensic file separation, Plan Mode read-only, human ratification gate.
-- **Ecosystem:** core `lazarus` + optional `lazarus-backlog` (audit → GitHub Issues); outward-facing features are opt-in sibling plugins.
+- **Ecosystem:** core `lazarus` + optional `lazarus-github` (audit → GitHub Issues); outward-facing features are opt-in sibling plugins.
 - **Releases:** v0.1.0 (first public), v0.2.0 (the ecosystem + companion plugin), v0.2.1 (hardening from real dogfood runs).
 - **Open source, MIT licensed; macOS & Linux (WSL on Windows); installs in three commands, no API keys, no signup.**

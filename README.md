@@ -108,7 +108,7 @@ flowchart LR
     style E fill:#fef9c3,stroke:#eab308,color:#111
 ```
 
-**Type the command, or just describe what you want** — both work. The slash command is the fast path; plain English triggers the same skill. (Plugin commands are namespaced, so they're `/lazarus:…` — type `/lazarus` and all three show up together.)
+**Type the command, or just describe what you want** — both work. The fast path is the command itself: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit` (start typing `/discover`, `/repair`, or `/audit` and it autocompletes). Plain English triggers the same skill.
 
 | Command | Also triggers on… | What it does |
 |---|---|---|
@@ -120,7 +120,7 @@ flowchart LR
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
 
 > [!TIP]
-> **Optional companion — `lazarus-backlog`.** After you run `audit`, turn its Top 10 Action Items into GitHub Issues with a separate, opt-in install: `/plugin install lazarus-backlog@cognitivecode`, then `/lazarus-backlog:issues`. It's a sibling plugin, so core stays zero-config — you only get `gh`-CLI behavior if you ask for it.
+> **Optional companion — `lazarus-github`.** After you run `audit`, turn its Top 10 Action Items into GitHub Issues with a separate, opt-in install: `/plugin install lazarus-github@cognitivecode`, then `/lazarus-github:issues`. It's a sibling plugin, so core stays zero-config — you only get `gh`-CLI behavior if you ask for it.
 
 ## 🛡️ The part that makes it safe to actually run
 
@@ -199,11 +199,11 @@ lazarus/  ← the marketplace
 │   ├── agents/repo-explorer                read-only Haiku subagent for huge repos
 │   └── hooks/ + scripts/check-destructive.sh   the deterministic guard
 │
-└── plugins/lazarus-backlog/         📋 optional companion — /plugin install lazarus-backlog@cognitivecode
+└── plugins/lazarus-github/         📋 optional companion — /plugin install lazarus-github@cognitivecode
     └── skills/issues                       turns an audit's Top 10 into GitHub Issues
 ```
 
-**Built to grow.** Anything outward-facing (creating GitHub issues, posting to Slack, filing Linear/Jira tickets) ships as an **opt-in sibling plugin**, never bundled into core — so the three-command install stays zero-config and a `gh`/API failure can't reach anyone who didn't ask for it. `lazarus-backlog` is the first sibling; the rest are the same shape.
+**Built to grow.** Anything outward-facing (creating GitHub issues, posting to Slack, filing Linear/Jira tickets) ships as an **opt-in sibling plugin**, never bundled into core — so the three-command install stays zero-config and a `gh`/API failure can't reach anyone who didn't ask for it. `lazarus-github` is the first sibling; the rest are the same shape.
 
 The `repo-explorer` subagent is deliberately restricted (read-only tool allowlist, Haiku tier) so mapping a 5,000-file monolith doesn't burn your context or your budget.
 
@@ -238,7 +238,7 @@ Use <b>WSL</b>. The guard is a bash hook (<code>scripts/check-destructive.sh</co
 <details>
 <summary><b>How do updates work?</b></summary>
 <br/>
-Run <code>/plugin update lazarus@cognitivecode</code> (and <code>lazarus-backlog</code> if you installed it). The plugin is git-SHA-versioned, so <code>/plugin update</code> always pulls the latest <code>main</code> — there's no version number you have to match. Tagged releases like <code>v0.2.1</code> are human-readable changelog markers (see <b>Releases</b>), not something you pin to.
+Run <code>/plugin update lazarus@cognitivecode</code> (and <code>lazarus-github</code> if you installed it). The plugin is git-SHA-versioned, so <code>/plugin update</code> always pulls the latest <code>main</code> — there's no version number you have to match. Tagged releases like <code>v0.2.1</code> are human-readable changelog markers (see <b>Releases</b>), not something you pin to.
 </details>
 
 <details>
@@ -297,7 +297,7 @@ lazarus/                 ← this directory IS the GitHub repo root
 │   ├── agents/repo-explorer.md
 │   ├── hooks/hooks.json                     ← auto-loaded; do NOT also list it in plugin.json
 │   └── scripts/check-destructive.sh         ← the guard (must stay executable / git mode 100755)
-└── plugins/lazarus-backlog/                ← optional companion (audit's §11 → GitHub Issues)
+└── plugins/lazarus-github/                ← optional companion (audit's §11 → GitHub Issues)
     ├── .claude-plugin/plugin.json
     └── skills/issues/SKILL.md
 ```

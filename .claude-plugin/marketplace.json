@@ -12,8 +12,8 @@
       "description": "Raise dead codebases — or any unfamiliar one. Onboard, repair, and audit any repo behind a deterministic destructive-command guard."
     },
     {
-      "name": "lazarus-backlog",
-      "source": "./plugins/lazarus-backlog",
+      "name": "lazarus-github",
+      "source": "./plugins/lazarus-github",
       "description": "Optional Lazarus companion — turn a CODEBASE_AUDIT.md's Top 10 Action Items into GitHub Issues, ratified before creation and deduped on re-run."
     }
   ]
