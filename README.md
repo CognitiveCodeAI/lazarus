@@ -108,7 +108,7 @@ flowchart LR
     style E fill:#fef9c3,stroke:#eab308,color:#111
 ```
 
-**Type the command, or just describe what you want** — both work. The slash command is the fast path; plain English triggers the same skill. (Plugin commands are namespaced, so they're `/lazarus:…` — type `/lazarus` and all three show up together.)
+**Type the command, or just describe what you want** — both work. The fast path is the command itself: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit` (start typing `/discover`, `/repair`, or `/audit` and it autocompletes). Plain English triggers the same skill.
 
 | Command | Also triggers on… | What it does |
 |---|---|---|
