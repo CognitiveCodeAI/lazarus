@@ -1,6 +1,6 @@
 {
-  "name": "lazarus-backlog",
-  "displayName": "Lazarus Backlog",
+  "name": "lazarus-github",
+  "displayName": "Lazarus GitHub",
   "description": "Optional Lazarus companion. Turns a CODEBASE_AUDIT.md §11 (Top 10 Action Items) into GitHub Issues — you ratify the set before anything is created, and it dedups on re-run so a re-audit never makes duplicates. GitHub-only (uses the gh CLI). Install alongside lazarus.",
   "author": {
     "name": "Cognitive Code",
@@ -10,7 +10,6 @@
   "keywords": [
     "lazarus",
     "audit",
-    "backlog",
     "github",
     "issues",
     "triage"

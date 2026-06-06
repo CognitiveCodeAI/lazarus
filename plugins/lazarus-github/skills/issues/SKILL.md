@@ -1,6 +1,6 @@
 ---
 name: issues
-description: Optional Lazarus companion — turn a CODEBASE_AUDIT.md "Top 10 Action Items" (§11) into GitHub Issues. Reads the audit produced by the Lazarus `audit` skill, proposes issues from the ranked action items (each carrying its acceptance check), splits items that are really epics into sub-issues, lets you ratify the set before anything is created, and dedups by a stable per-item key so re-running after a re-audit (which may re-rank items) never makes duplicates. Use when the user wants to turn an audit into a backlog, file the audit's action items as issues/tickets, or "create GitHub issues from the audit." GitHub Issues only — uses the gh CLI. REQUIRES a CODEBASE_AUDIT.md with a §11 section.
+description: Optional Lazarus companion — turn a CODEBASE_AUDIT.md "Top 10 Action Items" (§11) into GitHub Issues. Reads the audit produced by the Lazarus `audit` skill, proposes issues from the ranked action items (each carrying its acceptance check), splits items that are really epics into sub-issues, lets you ratify the set before anything is created, and dedups by a stable per-item key so re-running after a re-audit (which may re-rank items) never makes duplicates. Use when the user wants to turn an audit into a tracked set of GitHub issues, file the audit's action items as issues/tickets, or "create GitHub issues from the audit." GitHub Issues only — uses the gh CLI. REQUIRES a CODEBASE_AUDIT.md with a §11 section.
 ---
 
 # Audit → GitHub Issues
