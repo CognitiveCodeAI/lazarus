@@ -275,7 +275,7 @@ It's a 1-second click, and it does two things: it helps the next person staring 
 
 I have **more Claude Code tools ready to ship** — I'm releasing them based on real signal. Stars and activity here are how I gauge whether people want them. So a star isn't just a thank-you; it's a vote for the next one.
 
-> 🔜 **Next up:** more is on the way — ⭐ star and [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) to influence what ships first.
+> 🔜 **Next up: `/lazarus:remediate`** — close the loop from `audit` to *fixed*: take the findings and work them, behind the same guard. ⭐ star and [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) to shape it before it ships.
 
 > 💬 Got an idea, a bug, or a repo Lazarus choked on? [Open an issue](https://github.com/CognitiveCodeAI/lazarus/issues) or start a [discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) — I read every one.
 
