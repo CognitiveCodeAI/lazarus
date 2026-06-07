@@ -23,18 +23,6 @@ Point Claude at a repository and let Lazarus help make it: Alive again, document
 
 Both run behind a guard that blocks destructive commands before they ever run — and on the "make it run" side, **nothing changes until you approve the plan.** It'll resurrect a dead repo that won't even start (the namesake), but it's just as useful on healthy code you want made runnable, understood, or assessed.
 
-## 🚀 Is it *actually* ready?
-
-You wrote the code. But is it ready to **deploy**, ready to **open-source**, ready for **someone else's eyes**? Most of us never really know. Lazarus is the pre-flight check that tells you the truth — and **can't break anything finding out.**
-
-- 🌐 **Before you make it public** — `audit` finds the security holes and rough edges *before the internet does*. Open-source the repo you *meant* to ship.
-- 🚢 **Before you deploy** — a principal-engineer read on what's risky and what to fix first, even if you're a team of one.
-- 🤝 **Before you hand it off** — to a client, a teammate, a buyer — the audit *is* the deliverable: an honest health report with a ranked plan.
-- 🤖 **Before you let an AI loose in your repo** — point an agent at your code and walk away. The guard *physically can't* run the command that wrecks your machine.
-- ⏳ **When you come back to your own project months later** — `discover → repair` brings it back to life so you're not starting from zero.
-
-You don't have to be a principal engineer to get a principal engineer's read. That's the peace of mind: **know your code is solid — and that nothing broke proving it.**
-
 ## 🧭 Which to reach for
 
 Three skills in **two workflows**, with the guard across both. Match your situation:
@@ -69,15 +57,13 @@ In any `claude` session, run these **three commands — one at a time** (press E
 
 That's it. It installs **globally** — active in every repo you open. No file copying, no config, no API keys, no signup.
 
-**`lazarus-github` is optional and separate.** Those three commands are all *core* Lazarus needs — no extra install, no `gh`. Only if you also want to file an audit's findings as GitHub Issues do you add the companion; see the **lazarus-github** section below.
-
 > [!IMPORTANT]
 > **Don't skip step 3.** Installing *registers* the plugin, but its skills, hooks, and guard don't go live until you run `/reload-plugins` (or restart `claude`). If you tried a command below and nothing happened, this is almost always why.
 
 > [!WARNING]
 > **Use the full `https://…` URL, not the short `CognitiveCodeAI/lazarus` form.** The short form makes Claude Code clone over SSH; if you don't have GitHub SSH keys set up you'll get `Permission denied (publickey)` or `Host key verification failed`. The HTTPS URL needs no SSH and no auth — it just works.
 
-Then open a crusty repo, run `claude`, and *talk to it* (see below). 👇
+Then open any repo, run `claude`, and either type **`/lazarus:discover`** or **`/lazarus:audit`** — or just say *"make this run locally."* See it in action below. 👇
 
 ## 🎬 Watch it work
 
@@ -122,7 +108,7 @@ flowchart LR
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
 
 > [!TIP]
-> **Turn an audit into a backlog.** The optional **`lazarus-github`** companion files an audit's Top 10 Action Items as GitHub Issues — a separate, opt-in install so core stays zero-config. Full details in the **lazarus-github** section below.
+> **Turn an audit into a backlog.** The optional **`lazarus-github`** companion files an audit's findings as GitHub Issues — see the **lazarus-github** section below.
 
 ## 🛡️ The part that makes it safe to actually run
 
@@ -205,7 +191,7 @@ lazarus/  ← the marketplace
     └── skills/issues                       turns an audit's Top 10 into GitHub Issues
 ```
 
-**Built to grow.** Anything outward-facing (creating GitHub issues, posting to Slack, filing Linear/Jira tickets) ships as an **opt-in sibling plugin**, never bundled into core — so the three-command install stays zero-config and a `gh`/API failure can't reach anyone who didn't ask for it. `lazarus-github` is the first sibling; the rest are the same shape. See the **lazarus-github** section below for what it does and the dedup design.
+**Built to grow.** Anything outward-facing (creating GitHub issues, posting to Slack, filing Linear/Jira tickets) ships as an **opt-in sibling plugin**, never bundled into core — so the three-command install stays zero-config and an integration's `gh`/API failure can't reach anyone who didn't ask for it.
 
 The `repo-explorer` subagent is deliberately restricted (read-only tool allowlist, Haiku tier) so mapping a 5,000-file monolith doesn't burn your context or your budget.
 
@@ -284,22 +270,6 @@ Run <code>/plugin update lazarus@cognitivecode</code> (and <code>lazarus-github<
 Yes — it's one regex in <code>scripts/check-destructive.sh</code>. Fork, edit, and point your team at your fork's marketplace.
 </details>
 
-## 🚀 Get started
-
-Three commands, **one at a time**, in any `claude` session:
-
-```text
-/plugin marketplace add https://github.com/CognitiveCodeAI/lazarus
-```
-```text
-/plugin install lazarus@cognitivecode
-```
-```text
-/reload-plugins
-```
-
-…then open any repo and run **`/lazarus:discover`** or **`/lazarus:audit`** — or just say **"make this run locally."**
-
 ## ⭐ Star this repo (it decides what comes next)
 
 <div align="center">
@@ -318,47 +288,7 @@ I have **more Claude Code tools ready to ship** — I'm releasing them based on 
 
 ---
 
-<details>
-<summary><b>🛠️ Maintainer notes (publishing & updating)</b></summary>
-
-<br/>
-
-This repository **is** the marketplace.
-
-```
-lazarus/                 ← this directory IS the GitHub repo root
-├── .claude-plugin/marketplace.json        ← lists BOTH plugins; "name" = cognitivecode (the @handle)
-├── plugins/lazarus/                        ← core
-│   ├── .claude-plugin/plugin.json          ← plugin manifest (no version → git SHA is the version)
-│   ├── skills/{discover,repair,audit}/SKILL.md
-│   ├── agents/repo-explorer.md
-│   ├── hooks/hooks.json                     ← auto-loaded; do NOT also list it in plugin.json
-│   └── scripts/check-destructive.sh         ← the guard (must stay executable / git mode 100755)
-└── plugins/lazarus-github/                ← optional companion (audit's §11 → GitHub Issues)
-    ├── .claude-plugin/plugin.json
-    └── skills/issues/SKILL.md
-```
-
-**Pushing updates.** `plugin.json` deliberately omits `version`, so Claude Code uses the git commit SHA — every push is a new version and `claude plugin update` pulls it, no number to bump. (If you'd rather have named releases, add `"version"` and bump it on every change — but if you set it and forget to bump, updates silently stop.)
-
-```bash
-# edit files, then:
-git commit -am "…" && git push
-# devs pick it up with:  /plugin update lazarus@cognitivecode
-```
-
-**Validate before pushing** (the only expected warning is "No version specified"):
-
-```bash
-claude plugin validate ./plugins/lazarus   # plugin manifest + components
-claude plugin validate .                          # marketplace manifest
-```
-
-**Gotcha that passes validation but fails to load:** never declare `"hooks": "./hooks/hooks.json"` in `plugin.json` — the standard `hooks/hooks.json` is auto-loaded, and declaring it too triggers "Duplicate hooks file detected." Only list *additional* hook files. Always test with a real local install (`claude plugin marketplace add ./. && claude plugin install …`), not just `validate`.
-
-**Renaming the marketplace.** The string after `@` in `lazarus@cognitivecode` is `name` in `.claude-plugin/marketplace.json`.
-
-</details>
+**Maintaining or contributing?** See [MAINTAINING.md](./MAINTAINING.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 <div align="center">
 <sub>Built with ❤️ by <a href="https://cognitivecode.ai">Cognitive Code</a> · MIT licensed · Made for <a href="https://claude.com/claude-code">Claude Code</a></sub>
