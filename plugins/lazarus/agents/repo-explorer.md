@@ -66,4 +66,4 @@ You run on Haiku to keep exploration cheap. If a particular investigation genuin
 
 ## Research grounding
 
-The read-only sandbox + separate context pattern addresses the well-documented issue that read-only constraints expressed only in natural language can break mid-task (see OpenAI Codex issue #14121 for the Codex equivalent — same risk applies here). The Haiku model choice for exploration is grounded in the Codebase-Memory paper (arxiv 2603.27277) finding that text-based exploration achieves 83% answer quality at 10x lower token cost than the inline file-reading approach.
+The read-only sandbox + separate context pattern addresses the well-documented issue that read-only constraints expressed only in natural language can break mid-task (see OpenAI Codex issue #14121 for the Codex equivalent — same risk applies here). The Haiku model choice reflects a deliberate cost tradeoff: mapping a large repo with read-only text tools on a Haiku-tier model captures the structural signal at a fraction of the token cost of doing it on the main model.
