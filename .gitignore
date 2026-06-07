@@ -1,1 +1,6 @@
 .DS_Store
+
+# Local-only working files (not part of the published plugin)
+RELEASE_NOTES_*.md
+UPSTREAM_BUG_REPORT*.md
+assets/*.local-backup.*

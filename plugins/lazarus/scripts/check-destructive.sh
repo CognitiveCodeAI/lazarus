@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# PreToolUse hook for the legacy-toolkit plugin.
+# PreToolUse hook for the Lazarus plugin.
 #
 # Blocks destructive bash commands BEFORE they execute. Claude Code passes the
 # tool input as JSON on stdin; this script extracts .tool_input.command PRECISELY

@@ -48,7 +48,7 @@ Three skills in **two workflows**, with the guard across both. Match your situat
 > [!NOTE]
 > **Two workflows, one gate.** `discover` and `repair` are a *single* workflow split into plan-then-execute — `repair` won't run without a `discover` plan to ratify, and your approval is the gate between them. `audit` is a *separate* workflow: a different question, its own report, never required by the other two.
 
-**New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it.
+**New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it. For the whole picture in one read, see the [complete project overview](docs/OVERVIEW.md).
 
 ## ⚡ Install (no signup, no SSH keys)
 
@@ -68,6 +68,8 @@ In any `claude` session, run these **three commands — one at a time** (press E
 ```
 
 That's it. It installs **globally** — active in every repo you open. No file copying, no config, no API keys, no signup.
+
+**`lazarus-github` is optional and separate.** Those three commands are all *core* Lazarus needs — no extra install, no `gh`. Only if you also want to file an audit's findings as GitHub Issues do you add the companion; see the **lazarus-github** section below.
 
 > [!IMPORTANT]
 > **Don't skip step 3.** Installing *registers* the plugin, but its skills, hooks, and guard don't go live until you run `/reload-plugins` (or restart `claude`). If you tried a command below and nothing happened, this is almost always why.
@@ -120,7 +122,7 @@ flowchart LR
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
 
 > [!TIP]
-> **Optional companion — `lazarus-github`.** After you run `audit`, turn its Top 10 Action Items into GitHub Issues with a separate, opt-in install: `/plugin install lazarus-github@cognitivecode`, then `/lazarus-github:issues`. It's a sibling plugin, so core stays zero-config — you only get `gh`-CLI behavior if you ask for it.
+> **Turn an audit into a backlog.** The optional **`lazarus-github`** companion files an audit's Top 10 Action Items as GitHub Issues — a separate, opt-in install so core stays zero-config. Full details in the **lazarus-github** section below.
 
 ## 🛡️ The part that makes it safe to actually run
 
@@ -173,13 +175,13 @@ Customizing the blocklist is one regex in one file. Extend it for your environme
 
 <br/>
 
-The design choices aren't arbitrary; each traces to a specific 2026 empirical finding:
+The design choices aren't arbitrary; most trace to a specific 2026 empirical finding:
 
 - **Verified/inferred/assumed split** — agents convert assumptions into facts over long runs *(arXiv 2602.16666, "Towards a Science of AI Agent Reliability")*.
 - **Test-pass, not just build-pass, as the bar** — fix-related agent PRs fail most often at test cases, not builds *(arXiv 2602.00164)*.
 - **Definition-of-Done as evolving constraints** — repo repair is "search over evolving behavioral constraints," not optimization under fixed tests *(arXiv 2604.04580)*.
 - **Bias against rewrite** — un-merged agent PRs tend to be the large, sprawling ones; incremental beats rewrite on average *(arXiv 2601.15195)*.
-- **Cheap read-only exploration on Haiku** — text-based exploration is reported to reach ~83% answer quality at ~10× lower token cost *(arXiv 2603.27277)*.
+- **Cheap read-only exploration on Haiku** — mapping a large repo with read-only text tools on a small (Haiku-tier) model captures the structural signal at a fraction of the token cost of doing it on the main model.
 - **CLAUDE.md is normative, not community-converged** — there's still no settled standard, so the toolkit anchors to a commands-first structure *(arXiv 2510.21413)*.
 
 </details>
@@ -203,11 +205,46 @@ lazarus/  ← the marketplace
     └── skills/issues                       turns an audit's Top 10 into GitHub Issues
 ```
 
-**Built to grow.** Anything outward-facing (creating GitHub issues, posting to Slack, filing Linear/Jira tickets) ships as an **opt-in sibling plugin**, never bundled into core — so the three-command install stays zero-config and a `gh`/API failure can't reach anyone who didn't ask for it. `lazarus-github` is the first sibling; the rest are the same shape.
+**Built to grow.** Anything outward-facing (creating GitHub issues, posting to Slack, filing Linear/Jira tickets) ships as an **opt-in sibling plugin**, never bundled into core — so the three-command install stays zero-config and a `gh`/API failure can't reach anyone who didn't ask for it. `lazarus-github` is the first sibling; the rest are the same shape. See the **lazarus-github** section below for what it does and the dedup design.
 
 The `repo-explorer` subagent is deliberately restricted (read-only tool allowlist, Haiku tier) so mapping a 5,000-file monolith doesn't burn your context or your budget.
 
 </details>
+
+## 🔗 lazarus-github — file audit findings as GitHub Issues
+
+After running `/lazarus:audit`, you can turn the audit's Top 10 Action Items into filed GitHub Issues with one command. **`lazarus-github` is the first sibling plugin** in the Lazarus ecosystem — opt-in, installed separately from core.
+
+**Install** (one at a time, like the core install):
+
+```text
+/plugin install lazarus-github@cognitivecode
+```
+```text
+/reload-plugins
+```
+
+**Use:**
+
+```text
+/lazarus-github:issues
+```
+
+The skill reads `CODEBASE_AUDIT.md` §11, shows you the proposed issues, lets you adjust titles and labels and pick which to file, then runs `gh issue create` for each one. **Ratify-before-create — nothing is filed silently.**
+
+**Idempotent on re-runs.** Each created issue carries a hidden provenance marker (`<!-- lazarus:audit-item:<slug> -->`, keyed to a *stable per-item slug — not the rank*) plus a `lazarus-audit` label. Re-audit your repo, re-run `/lazarus-github:issues`, and items that already have an issue are skipped — only new findings get filed. Re-ranking on a re-audit can't cause duplicates, because the marker keys on the slug, not the position.
+
+**GitHub-only for v1.** Uses the `gh` CLI, which most developers already have — pre-authenticated in many environments (Codespaces, devcontainers, anyone who's run `gh auth login`). No API tokens to manage.
+
+**What it requires:** `gh` installed, authenticated (`gh auth status` succeeds), and resolving to the current repo (`gh repo view` succeeds). The skill fails fast with a clear message if any of these isn't true — it never partially files.
+
+### The sibling plugin pattern
+
+`lazarus-github` establishes the structural pattern for outward-facing integrations: each ships as a **separate opt-in plugin in the same marketplace, never bundled into core.** Core Lazarus stays small, fast, and zero-config; integrations grow the ecosystem by addition.
+
+**Why not one plugin with every integration?** Each tracker has its own auth story — Linear and Jira need API tokens and workspace config; GitLab brings its own CLI. Bundling them into core would force every user to pay the setup cost for integrations they'll never use. Sibling plugins let you install only what you need — and a `gh`/API failure can only ever reach someone who opted in.
+
+**Other tracker integrations** (Linear, Jira, GitLab) are part of the architectural vision — *not* committed roadmap items. If one would help you, [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions); interest signals what to build next.
 
 ## ❓ FAQ
 
