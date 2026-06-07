@@ -1,12 +1,18 @@
 # assets
 
-Drop the two images here so the README renders them:
+Images used by the project README and the repo's GitHub presentation.
 
-| File | Used for | Recommended size |
-|------|----------|------------------|
-| `banner.png` | Hero image at the top of the README (and the repo's social-preview card) | 1280×640 (2:1) |
-| `guard.png`  | Inline image in the "makes it safe" section | ~512×512, transparent background |
+| File | Used for | Referenced from |
+|------|----------|-----------------|
+| `banner2.png` | Hero image at the top of the README | `README.md` |
+| `demo.svg`    | Animated "Watch it work" terminal | `README.md` |
+| `guard.png`   | Inline image in the "makes it safe to run" section | `README.md` |
+| `og-card.png` | Social-preview card (how the repo unfurls on Slack/X/etc.) | GitHub → repo **Settings → General → Social preview** (not referenced from `README.md`) |
 
-After adding them: `git add assets/*.png && git commit -m "Add README art" && git push`.
+**Updating an image.** Replace the file in place and keep the same name, so the README keeps
+resolving it, then stage just that one file — e.g. `git add assets/banner2.png`. Avoid
+`git add assets/*` / `git add -A`, which can sweep up local scratch files (`*.local-backup.*`,
+which are git-ignored).
 
-**Social preview:** also upload `banner.png` under GitHub → repo **Settings → General → Social preview** so it shows when the repo is shared on Slack/X/etc.
+**Social preview.** Upload `og-card.png` under GitHub → repo **Settings → General → Social preview**
+so the card shows when the repo is shared.

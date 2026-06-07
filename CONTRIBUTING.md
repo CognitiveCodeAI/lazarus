@@ -11,16 +11,22 @@ Thanks for helping raise dead codebases! 🧟 Issues, ideas, and PRs are all wel
 
 ## Repo layout
 
-This repo **is** the plugin marketplace. The plugin lives in `plugins/lazarus/`:
+This repo **is** the plugin marketplace. It ships two plugins — the **core** plugin and an optional **sibling**:
 
 ```
-plugins/lazarus/
+plugins/lazarus/                 # core plugin
 ├── .claude-plugin/plugin.json   # manifest (NO version field — git SHA is the version)
 ├── skills/                      # discover, repair, audit (SKILL.md each)
 ├── agents/repo-explorer.md      # read-only Haiku exploration subagent
 ├── hooks/hooks.json             # wires the guard as a PreToolUse hook (auto-loaded)
 └── scripts/check-destructive.sh # the destructive-command guard
+
+plugins/lazarus-github/          # optional sibling — files an audit's Top 10 as GitHub Issues
+├── .claude-plugin/plugin.json
+└── skills/issues/SKILL.md
 ```
+
+**Sibling-plugin pattern.** Anything outward-facing (filing GitHub Issues, posting to Slack, Linear/Jira) ships as a separate opt-in plugin in this same marketplace — never bundled into core — so the core install stays zero-config and a `gh`/API failure can't reach anyone who didn't opt in. `lazarus-github` is the first sibling.
 
 ## Dev loop
 

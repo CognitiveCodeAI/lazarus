@@ -48,7 +48,7 @@ Three skills in **two workflows**, with the guard across both. Match your situat
 > [!NOTE]
 > **Two workflows, one gate.** `discover` and `repair` are a *single* workflow split into plan-then-execute — `repair` won't run without a `discover` plan to ratify, and your approval is the gate between them. `audit` is a *separate* workflow: a different question, its own report, never required by the other two.
 
-**New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it.
+**New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it. For the whole picture in one read, see the [complete project overview](docs/OVERVIEW.md).
 
 ## ⚡ Install (no signup, no SSH keys)
 
@@ -173,13 +173,13 @@ Customizing the blocklist is one regex in one file. Extend it for your environme
 
 <br/>
 
-The design choices aren't arbitrary; each traces to a specific 2026 empirical finding:
+The design choices aren't arbitrary; most trace to a specific 2026 empirical finding:
 
 - **Verified/inferred/assumed split** — agents convert assumptions into facts over long runs *(arXiv 2602.16666, "Towards a Science of AI Agent Reliability")*.
 - **Test-pass, not just build-pass, as the bar** — fix-related agent PRs fail most often at test cases, not builds *(arXiv 2602.00164)*.
 - **Definition-of-Done as evolving constraints** — repo repair is "search over evolving behavioral constraints," not optimization under fixed tests *(arXiv 2604.04580)*.
 - **Bias against rewrite** — un-merged agent PRs tend to be the large, sprawling ones; incremental beats rewrite on average *(arXiv 2601.15195)*.
-- **Cheap read-only exploration on Haiku** — text-based exploration is reported to reach ~83% answer quality at ~10× lower token cost *(arXiv 2603.27277)*.
+- **Cheap read-only exploration on Haiku** — mapping a large repo with read-only text tools on a small (Haiku-tier) model captures the structural signal at a fraction of the token cost of doing it on the main model.
 - **CLAUDE.md is normative, not community-converged** — there's still no settled standard, so the toolkit anchors to a commands-first structure *(arXiv 2510.21413)*.
 
 </details>

@@ -82,12 +82,12 @@ Commands are namespaced: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit
 
 ## 6. Grounded in research, not vibes
 
-Each design choice traces to a specific 2026 empirical finding in AI-agent reliability:
+Most design choices trace to a specific 2026 empirical finding in AI-agent reliability:
 - **The verified/inferred/assumed split** — agents convert assumptions into facts over long runs ("Towards a Science of AI Agent Reliability," arXiv 2602.16666).
 - **Test-pass, not just build-pass** — fix-related agent pull requests fail most often at test cases, not builds (arXiv 2602.00164).
 - **Definition-of-Done as evolving constraints** — repository repair is "search over evolving behavioral constraints," not optimization under fixed tests (arXiv 2604.04580).
 - **Bias against rewrite** — un-merged agent PRs tend to be the large, sprawling ones; incremental beats rewrite on average (arXiv 2601.15195).
-- **Cheap read-only exploration on a small model** — text-based exploration reaches high answer quality at a fraction of the token cost (arXiv 2603.27277).
+- **Cheap read-only exploration on a small model** — mapping a large repo with read-only text tools on a Haiku-tier model captures the structural signal at a fraction of the token cost of doing it on the main model.
 
 ---
 
@@ -135,5 +135,5 @@ You don't have to be a principal engineer to get a principal engineer's read. Th
 - **The guard:** deterministic `PreToolUse` hook, reads JSON on stdin, blocks ~25+ destructive patterns, fails closed, exit 2 = deny.
 - **Safety pillars:** confidence tags, mechanical Definition of Done, forensic file separation, Plan Mode read-only, human ratification gate.
 - **Ecosystem:** core `lazarus` + optional `lazarus-github` (audit → GitHub Issues); outward-facing features are opt-in sibling plugins.
-- **Releases:** v0.1.0 (first public), v0.2.0 (the ecosystem + companion plugin), v0.2.1 (hardening from real dogfood runs).
+- **Releases:** v0.1.0 (first public), v0.2.0 (the ecosystem + companion plugin), v0.2.1 (hardening from real dogfood runs), v0.3.0 (/discover surfaced in the slash menu; companion renamed lazarus-backlog → lazarus-github).
 - **Open source, MIT licensed; macOS & Linux (WSL on Windows); installs in three commands, no API keys, no signup.**
