@@ -25,16 +25,17 @@ Both run behind a guard that blocks destructive commands before they ever run �
 
 ## 🧭 Which to reach for
 
-Three skills in **two workflows**, with the guard across both. Match your situation:
+Four skills in **two workflows** — each now *plan-then-execute* — with the guard across both. Match your situation:
 
 | Your situation | Reach for | What happens |
 |---|---|---|
 | *"It won't run"* · *"I'm lost in this repo"* · *"I need to change it safely"* | 🔍 **`discover`** → *you approve* → 🔧 **`repair`** | `discover` investigates read-only and writes a plan with a runnable "done" checklist; you approve it; `repair` works the blockers until each one passes — recording what actually worked in `CLAUDE.md`. |
 | *"What shape is this in?"* · *"What do we fix first?"* · *"Maintain, refactor, or rewrite?"* | 🧭 **`audit`** | A read-only, 12-section principal-engineer report — architecture, risks, security, dependency health, a phased plan. Changes nothing; it's a deliverable you act on (or hand to a client). |
+| *"Now go fix what the audit found"* · *"work the Top 10"* · *"apply the modernization plan"* | 🧭 **`audit`** → *you approve* → 🛠️ **`audit-repair`** | After the audit, `audit-repair` executes the Top 10 findings **one at a time** behind the ratify gate — verifying each against its acceptance check. The apply phase for `audit`, exactly as `repair` is for `discover`. |
 | *"Don't let the agent wreck my machine"* | 🛡️ *(automatic)* | The guard blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more — the whole time. |
 
 > [!NOTE]
-> **Two workflows, one gate.** `discover` and `repair` are a *single* workflow split into plan-then-execute — `repair` won't run without a `discover` plan to ratify, and your approval is the gate between them. `audit` is a *separate* workflow: a different question, its own report, never required by the other two.
+> **Two workflows, one gate — now symmetric.** Each is *plan-then-execute* with your approval as the gate: **`discover` → `repair`** (make it run) and **`audit` → `audit-repair`** (assess, then fix). `repair` won't run without a ratified `discover` plan; `audit-repair` won't run without a ratified `audit`. The two workflows stay independent — neither requires the other, and `audit` is still perfectly useful as a read-only report you never act on.
 
 **New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it. For the whole picture in one read, see the [complete project overview](docs/OVERVIEW.md).
 
@@ -102,7 +103,8 @@ flowchart LR
 |---|---|---|
 | **`/lazarus:discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* · *"help me get oriented"* | Investigates **read-only**, writes `DISCOVERY.md` — a plan plus a concrete *definition of done* — then **stops and waits for you**. |
 | **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first. |
-| **`/lazarus:audit`** | *"review this code"* · *"audit this repo"* · *"what should we fix first?"* · *"refactor or rewrite?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased plan. **Read-only**, and a **separate workflow** — it doesn't need or feed discover/repair. |
+| **`/lazarus:audit`** | *"review this code"* · *"audit this repo"* · *"what should we fix first?"* · *"refactor or rewrite?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased plan. **Read-only**; feeds `audit-repair` if you choose to act on it. |
+| **`/lazarus:audit-repair`** | *"execute the audit"* · *"fix the audit findings"* · *"work the Top 10 action items"* · *"apply the modernization plan"* | Executes a ratified `CODEBASE_AUDIT.md` §11 **one finding at a time** — ratify → act → verify against each item's acceptance check — safety-rails first, behind the guard. The strategic apply phase (`audit → audit-repair`), mirroring `discover → repair`. |
 
 > [!TIP]
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
@@ -183,12 +185,15 @@ This repo is a Claude Code **plugin marketplace** with a small, growing family:
 lazarus/  ← the marketplace
 │
 ├── plugins/lazarus/                 🧟 core   — /plugin install lazarus@cognitivecode
-│   ├── skills/discover · repair · audit    the two workflows
+│   ├── skills/discover · repair · audit · audit-repair   the workflows
 │   ├── agents/repo-explorer                read-only Haiku subagent for huge repos
 │   └── hooks/ + scripts/check-destructive.sh   the deterministic guard
 │
-└── plugins/lazarus-github/         📋 optional companion — /plugin install lazarus-github@cognitivecode
-    └── skills/issues                       turns an audit's Top 10 into GitHub Issues
+├── plugins/lazarus-github/         📋 optional companion — /plugin install lazarus-github@cognitivecode
+│   └── skills/issues                       turns an audit's Top 10 into GitHub Issues
+│
+└── plugins/lazarus-forge/          🛠️ optional companion — /plugin install lazarus-forge@cognitivecode
+    └── skills/design-review                pre-build quality gate for skill/plugin/agent/MCP/hook proposals
 ```
 
 **Built to grow.** Anything outward-facing (creating GitHub issues, posting to Slack, filing Linear/Jira tickets) ships as an **opt-in sibling plugin**, never bundled into core — so the three-command install stays zero-config and an integration's `gh`/API failure can't reach anyone who didn't ask for it.
@@ -282,7 +287,7 @@ It's a 1-second click, and it does two things: it helps the next person staring 
 
 I have **more Claude Code tools ready to ship** — I'm releasing them based on real signal. Stars and activity here are how I gauge whether people want them. So a star isn't just a thank-you; it's a vote for the next one.
 
-> 🔜 **Next up: `/lazarus:remediate`** — close the loop from `audit` to *fixed*: take the findings and work them, behind the same guard. ⭐ star and [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) to shape it before it ships.
+> ✅ **Just shipped: `/lazarus:audit-repair`** — closes the loop from `audit` to *fixed*. It takes the Top 10 findings and works each one behind a ratify-before-action gate and the same destructive-command guard, verifying every change against its acceptance check. The strategic apply phase (`audit → audit-repair`), mirroring `discover → repair`. Also new: **`lazarus-forge:design-review`**, an optional pre-build quality gate for designing new skills/plugins. ⭐ star and [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) to shape what's next.
 
 > 💬 Got an idea, a bug, or a repo Lazarus choked on? [Open an issue](https://github.com/CognitiveCodeAI/lazarus/issues) or start a [discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) — I read every one.
 

@@ -41,7 +41,7 @@ A tool absent from *one* session's surface is **not** automatically nonexistent 
 | **Feature/enterprise-gated** | team/onboarding/share tools | gated by product surface; classify by availability, don't assert |
 | **Deferred** | tools surfaced on demand in a session | enumerate via `ToolSearch`; present-but-latent, not absent |
 
-When reviewing a proposal's deny list, the finding is **"verify this against the live surface + docs and classify conditional tools,"** never **"these tools don't exist."** (This rule exists because this team's own `presentation` deny list named conditional tools as if absolute — the failure this skill must not reproduce.)
+When reviewing a proposal's deny list, the finding is **"verify this against the live surface + docs and classify conditional tools,"** never **"these tools don't exist."** (This rule exists because a draft deny list once named conditional tools as if absolute — the failure this skill must not reproduce.)
 
 ## Live-verification contract (for THIS skill's own maintenance)
 
