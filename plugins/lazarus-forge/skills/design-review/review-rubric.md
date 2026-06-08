@@ -10,7 +10,7 @@ Each row lists the **minimum input tier** at which it becomes assessable (Idea /
 |---|---|---|---|
 | `purpose.defined` | Is there a single, defensible purpose? | Idea | No defensible purpose → candidate `DO-NOT-BUILD`. |
 | `purpose.non-goals` | Are non-goals stated, not just goals? | Proposal | Absent non-goals is a real gap, not polish. |
-| `purpose.differentiation` | Does it overlap an existing skill (`audit`/`discover`/`presentation`/built-ins)? | Proposal | Overlap without differentiation → High. |
+| `purpose.differentiation` | Does it overlap an existing skill (`audit`/`discover`/`repair`/`audit-repair`/built-ins)? | Proposal | Overlap without differentiation → High. |
 | `scope.proportion` | Is scope matched to v1 (not the everything-bagel)? | Proposal | Over-broad scope → wrong-rubric risk; recommend deferral with reasons. |
 
 ## B. Runtime fit (LIVE-VERIFIED — never from memory)

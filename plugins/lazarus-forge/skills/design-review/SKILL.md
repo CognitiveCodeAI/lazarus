@@ -12,7 +12,7 @@ when_to_use: >-
   implementation: "review my skill/plugin proposal", "is this agent/MCP design sound before I
   build it", "design review of this SKILL.md", "pressure-test this tool idea", "should we build
   this". NOT for reviewing BUILT code (use audit), how-a-repo-runs onboarding (use discover),
-  presentation/README polish (use presentation), or the generic /review, /code-review,
+  README/prose polish, or the generic /review, /code-review,
   /security-review of a diff. This reviews a PROPOSAL, before it exists.
 disallowed-tools: >-
   Edit, NotebookEdit, Bash, PowerShell, Agent, Workflow, Skill, Monitor, EnterWorktree,
