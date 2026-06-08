@@ -20,7 +20,18 @@ Two things must be true before this skill proposes anything. If either fails, **
 
 ### 1. Parse §11 into structured items
 
-Read `CODEBASE_AUDIT.md` and extract each Top 10 Action Item: rank/number, priority, action, impact, effort (S/M/L), risk, files involved, and its **acceptance check** (a runnable command, or an observable assertion). For each item derive a **stable dedup key** — a kebab-case slug of the action title (e.g. "Require JWT_SECRET; remove the 'superSecret' fallback" → `require-jwt-secret-remove-superSecret-fallback`). Key on the slug, **not the rank**: a re-audit can re-rank the same finding, and a rank-based key would then duplicate it or skip the wrong one.
+Read `CODEBASE_AUDIT.md` and extract each Top 10 Action Item: rank/number, priority, action, impact, effort (S/M/L), risk, files involved, and its **acceptance check** (a runnable command, or an observable assertion). For each item derive a **stable dedup key** — a kebab-case slug of the action title.
+
+**Canonical slug algorithm (the single source of truth — `audit-repair` references this exact rule, do not re-specify a divergent one):** lowercase the entire action title; replace every run of non-alphanumeric characters with a single `-`; trim leading/trailing `-`. Worked examples pinning the tricky cases:
+
+| Action title | Slug |
+|---|---|
+| `Require JWT_SECRET; remove the 'superSecret' fallback` | `require-jwt-secret-remove-supersecret-fallback` |
+| `Add OAuth2.0 login` | `add-oauth2-0-login` |
+| `Fix CVE-2024-1234 in parser.` | `fix-cve-2024-1234-in-parser` |
+| `Pin Node.js >=18` | `pin-node-js-18` |
+
+Fully-lowercase is deliberate: a "preserve intra-word caps" rule is unspecifiable (it can't be stated as one consistent transform), whereas this matches GitHub's own slugging and is trivially testable. Key on the slug, **not the rank**: a re-audit can re-rank the same finding, and a rank-based key would then duplicate it or skip the wrong one.
 
 If an action item is really an **epic** — it spans many files/routes/concerns, or the audit flagged it as one — plan to split it into sub-issues, each with its own acceptance check and its own slug (e.g. `<parent-slug>--<sub>`). You'll surface the split in step 3 for the user to accept or collapse.
 
