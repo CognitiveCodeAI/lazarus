@@ -1,0 +1,18 @@
+{
+  "name": "lazarus-forge",
+  "displayName": "Lazarus Forge",
+  "description": "Authoring companion for the Lazarus family. A bounded, evidence-backed, runtime-verified design-review gate for Claude Code skill / plugin / agent / MCP / hook proposals — run it BEFORE you build, get exactly one verdict (BUILD / BUILD-WITH-CHANGES / DO-NOT-BUILD / NEEDS-MORE-DETAIL), and a closed required-changes list so review converges instead of looping. Install alongside lazarus.",
+  "author": {
+    "name": "Cognitive Code",
+    "email": "larry@cognitivecode.ai"
+  },
+  "license": "MIT",
+  "keywords": [
+    "lazarus",
+    "design-review",
+    "skill-authoring",
+    "quality-gate",
+    "claude-code",
+    "review"
+  ]
+}
