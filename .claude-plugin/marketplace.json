@@ -15,6 +15,11 @@
       "name": "lazarus-github",
       "source": "./plugins/lazarus-github",
       "description": "Optional Lazarus companion — turn a CODEBASE_AUDIT.md's Top 10 Action Items into GitHub Issues, ratified before creation and deduped on re-run."
+    },
+    {
+      "name": "lazarus-forge",
+      "source": "./plugins/lazarus-forge",
+      "description": "Authoring companion — a bounded, runtime-verified design-review gate for Claude Code skill/plugin/agent/MCP/hook proposals. One verdict (BUILD / BUILD-WITH-CHANGES / DO-NOT-BUILD / NEEDS-MORE-DETAIL) and a closed change list, so review converges."
     }
   ]
 }
