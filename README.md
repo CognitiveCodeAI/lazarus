@@ -101,8 +101,8 @@ flowchart LR
 
 | Command | Also triggers on… | What it does |
 |---|---|---|
-| **`/lazarus:discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* · *"help me get oriented"* | Investigates **read-only**, writes `DISCOVERY.md` — a plan plus a concrete *definition of done* — then **stops and waits for you**. |
-| **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first. |
+| **`/lazarus:discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* · *"help me get oriented"* | Investigates **read-only**, writes `DISCOVERY.md` — a *repairability verdict*, a plan, and a concrete *definition of done* — then **stops and waits for you**. |
+| **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first — and refuses one whose verdict is *not-repairable* (never-built features are feature work, not a repair). |
 | **`/lazarus:audit`** | *"review this code"* · *"audit this repo"* · *"what should we fix first?"* · *"refactor or rewrite?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased plan. **Read-only**; feeds `audit-repair` if you choose to act on it. |
 | **`/lazarus:audit-repair`** | *"execute the audit"* · *"fix the audit findings"* · *"work the Top 10 action items"* · *"apply the modernization plan"* | Executes a ratified `CODEBASE_AUDIT.md` §11 **one finding at a time** — ratify → act → verify against each item's acceptance check — safety-rails first, behind the guard. The strategic apply phase (`audit → audit-repair`), mirroring `discover → repair`. |
 
