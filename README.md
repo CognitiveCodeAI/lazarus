@@ -18,24 +18,24 @@ Point Claude at a repository and let Lazarus help make it: Alive again, document
 
 **Lazarus** is a Claude Code plugin for working on a codebase with an AI agent you can actually trust. It does **two jobs** on *any* repo — yours, one you inherited, an open-source project, healthy or broken:
 
-- 🔧 **Make it run** — point it at code that won't start, or that you simply don't know yet. It investigates, proposes a plan with a concrete "done" checklist you approve, then works through the blockers until the app boots — and writes down what actually worked so the next person (or the next you) doesn't start from zero.
-- 🧭 **Assess it** — get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on or hand to a client. Nothing in the repo changes.
+- 🔧 **Make it run** (`discover` → `repair`) — point it at code that won't start, or that you simply don't know yet. It investigates, proposes a plan with a concrete "done" checklist you approve, then works through the blockers until the app boots — and writes down what actually worked so the next person (or the next you) doesn't start from zero.
+- 🧭 **Assess it — and, if you choose, fix it** (`audit` → `audit-repair`) — get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on, hand to a client — or have executed finding-by-finding, each behind your approval.
 
-Both run behind a guard that blocks destructive commands before they ever run — and on the "make it run" side, **nothing changes until you approve the plan.** It'll resurrect a dead repo that won't even start (the namesake), but it's just as useful on healthy code you want made runnable, understood, or assessed.
+Both journeys run behind a guard that blocks destructive commands before they ever run — and in both, **nothing changes until you approve a plan.** It'll resurrect a dead repo that won't even start (the namesake), but it's just as useful on healthy code you want made runnable, understood, or assessed.
 
-## 🧭 Which to reach for
+## 🧭 Two journeys, four commands
 
-Four skills in **two workflows** — each now *plan-then-execute* — with the guard across both. Match your situation:
+Lazarus looks like four skills, but you only ever choose between **two journeys**. Each is *plan → you approve → execute* — the four commands are just the steps:
 
-| Your situation | Reach for | What happens |
+| You want… | The journey | How it flows |
 |---|---|---|
-| *"It won't run"* · *"I'm lost in this repo"* · *"I need to change it safely"* | 🔍 **`discover`** → *you approve* → 🔧 **`repair`** | `discover` investigates read-only and writes a plan with a runnable "done" checklist; you approve it; `repair` works the blockers until each one passes — recording what actually worked in `CLAUDE.md`. |
-| *"What shape is this in?"* · *"What do we fix first?"* · *"Maintain, refactor, or rewrite?"* | 🧭 **`audit`** | A read-only, 12-section principal-engineer report — architecture, risks, security, dependency health, a phased plan. Changes nothing; it's a deliverable you act on (or hand to a client). |
-| *"Now go fix what the audit found"* · *"work the Top 10"* · *"apply the modernization plan"* | 🧭 **`audit`** → *you approve* → 🛠️ **`audit-repair`** | After the audit, `audit-repair` executes the Top 10 findings **one at a time** behind the ratify gate — verifying each against its acceptance check. The apply phase for `audit`, exactly as `repair` is for `discover`. |
-| *"Don't let the agent wreck my machine"* | 🛡️ *(automatic)* | The guard blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more — the whole time. |
+| **It running** — *"it won't start"* · *"I'm lost in this repo"* · *"I need to change it safely"* | 🔍 **`discover`** → 🧑 *you approve* → 🔧 **`repair`** | `discover` investigates read-only and writes a plan with a runnable "done" checklist; you approve it; `repair` works the blockers until each one passes — recording what actually worked in `CLAUDE.md`. |
+| **It assessed — and, if you choose, fixed** — *"what shape is this in?"* · *"maintain, refactor, or rewrite?"* · *"now go fix what the audit found"* | 🧭 **`audit`** → 🧑 *your call* → 🛠️ **`audit-repair`** | `audit` writes a read-only, 12-section principal-engineer report. Stop there — it's a deliverable you can hand to a client — or ratify its Top 10 and `audit-repair` executes them **one at a time**, verifying each against its acceptance check. |
+
+And the whole time — both journeys, every step — the 🛡️ **guard** blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more destructive commands before they ever execute.
 
 > [!NOTE]
-> **Two workflows, one gate — now symmetric.** Each is *plan-then-execute* with your approval as the gate: **`discover` → `repair`** (make it run) and **`audit` → `audit-repair`** (assess, then fix). `repair` won't run without a ratified `discover` plan; `audit-repair` won't run without a ratified `audit`. The two workflows stay independent — neither requires the other, and `audit` is still perfectly useful as a read-only report you never act on.
+> **Don't memorize the order — start anywhere.** The skills route you: type `/lazarus:repair` with no plan and it stops and offers to run `discover` first; finish `discover` and it names the next command; `audit-repair` refuses to run until an `audit` is ratified. The two journeys stay independent — neither requires the other, and `audit` is still perfectly useful as a report you never act on.
 
 **New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it. For the whole picture in one read, see the [complete project overview](docs/OVERVIEW.md).
 
@@ -74,9 +74,9 @@ A scary repo to a running app — discover, you approve, repair, and the guard s
 <img src="assets/demo.svg" alt="Animated terminal: discover writes a plan, you approve, repair fixes the blockers, the guard blocks rm -rf /, and the app boots" width="100%" />
 </div>
 
-## 🗺️ The two workflows
+## 🗺️ The two journeys
 
-Two independent workflows. One makes the code run; the other tells you what to do about it.
+Two independent journeys. One makes the code run; the other tells you what to do about it — and fixes it, if you say so.
 
 ```mermaid
 flowchart LR
@@ -90,21 +90,33 @@ flowchart LR
 
     B -->|assess it| H["🧭 lazarus:audit<br/>read-only"]
     H --> I["📊 CODEBASE_AUDIT.md<br/>risks · what to fix first<br/>· refactor vs rewrite"]
+    I -.->|"optional"| J(["🧑 you ratify<br/>the Top 10"])
+    J --> K["🛠️ lazarus:audit-repair<br/>one finding at a time"]
+    K --> L["✅ findings fixed +<br/>verified against checks"]
 
     style A fill:#fee2e2,stroke:#ef4444,color:#111
     style G fill:#dcfce7,stroke:#22c55e,color:#111
     style I fill:#e0f2fe,stroke:#0ea5e9,color:#111
     style E fill:#fef9c3,stroke:#eab308,color:#111
+    style J fill:#fef9c3,stroke:#eab308,color:#111
+    style L fill:#dcfce7,stroke:#22c55e,color:#111
 ```
 
-**Type the command, or just describe what you want** — both work. The fast path is the command itself: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit` (start typing `/discover`, `/repair`, or `/audit` and it autocompletes). Plain English triggers the same skill.
+**Type the command, or just describe what you want** — both work. The fast path is the command itself (start typing `/discover`, `/repair`, or `/audit` and it autocompletes); plain English triggers the same skill.
+
+**Journey 1 — make it run**
 
 | Command | Also triggers on… | What it does |
 |---|---|---|
 | **`/lazarus:discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* · *"help me get oriented"* | Investigates **read-only**, writes `DISCOVERY.md` — a *repairability verdict*, a plan, and a concrete *definition of done* — then **stops and waits for you**. |
 | **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first — and refuses one whose verdict is *not-repairable* (never-built features are feature work, not a repair). |
+
+**Journey 2 — assess it, then (optionally) fix it**
+
+| Command | Also triggers on… | What it does |
+|---|---|---|
 | **`/lazarus:audit`** | *"review this code"* · *"audit this repo"* · *"what should we fix first?"* · *"refactor or rewrite?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased plan. **Read-only**; feeds `audit-repair` if you choose to act on it. |
-| **`/lazarus:audit-repair`** | *"execute the audit"* · *"fix the audit findings"* · *"work the Top 10 action items"* · *"apply the modernization plan"* | Executes a ratified `CODEBASE_AUDIT.md` §11 **one finding at a time** — ratify → act → verify against each item's acceptance check — safety-rails first, behind the guard. The strategic apply phase (`audit → audit-repair`), mirroring `discover → repair`. |
+| **`/lazarus:audit-repair`** | *"execute the audit"* · *"fix the audit findings"* · *"work the Top 10 action items"* · *"apply the modernization plan"* | Executes a ratified `CODEBASE_AUDIT.md` §11 **one finding at a time** — ratify → act → verify against each item's acceptance check — safety-rails first, behind the guard. The strategic apply phase, exactly as `repair` is for `discover`. |
 
 > [!TIP]
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
@@ -242,13 +254,13 @@ The skill reads `CODEBASE_AUDIT.md` §11, shows you the proposed issues, lets yo
 <details>
 <summary><b>I installed it but <code>/lazarus:discover</code> (or the guard) does nothing. Why?</b></summary>
 <br/>
-You almost certainly skipped <code>/reload-plugins</code>. Installing registers the plugin; its skills, hooks, and guard only go live after you run <code>/reload-plugins</code> (or restart <code>claude</code>) in that session. Run it once and the <code>/lazarus:discover</code>, <code>/lazarus:repair</code>, and <code>/lazarus:audit</code> commands appear.
+You almost certainly skipped <code>/reload-plugins</code>. Installing registers the plugin; its skills, hooks, and guard only go live after you run <code>/reload-plugins</code> (or restart <code>claude</code>) in that session. Run it once and the <code>/lazarus:discover</code>, <code>/lazarus:repair</code>, <code>/lazarus:audit</code>, and <code>/lazarus:audit-repair</code> commands appear.
 </details>
 
 <details>
 <summary><b>Will it actually change my code without asking?</b></summary>
 <br/>
-Discovery and audit are read-only (Plan Mode). Repair changes code — but only after you approve the plan, and the guard blocks destructive shell commands throughout. You stay in the loop at the one decision that matters: ratifying what "done" means.
+Discovery and audit are read-only (Plan Mode). Repair and audit-repair change code — but only after you ratify a plan (the "done" checklist, or the audit's Top 10), and the guard blocks destructive shell commands throughout. You stay in the loop at the one decision that matters: ratifying what "done" means.
 </details>
 
 <details>
