@@ -17,6 +17,10 @@ This skill executes against a ratified `DISCOVERY.md`. It is NOT a generic "fix 
 
 This precondition exists because agent repair without an upstream contract has a documented failure mode: the agent silently redefines success as it goes (see arxiv 2604.04580 — "Beyond Fixed Tests").
 
+**Second refusal — `not-repairable`.** If `DISCOVERY.md` carries `Repairability verdict: not-repairable`, stop. Repair fixes blockers in code that exists; it does not build functionality that was never written — that is feature work needing its own plan. Quote the verdict's justification back to the user and offer the real options: re-run discovery scoped to the subset that does exist, or commission the missing pieces as deliberate feature development outside this skill.
+
+If the verdict is `partially-runnable`, proceed — but the `## Gaps (never built)` list stays out of scope: work only the blockers, and never quietly start building a gap because it would make the app "more done." If `DISCOVERY.md` has no verdict field (it predates the field), treat it as `repairable` and note that in `VERIFICATION_REPORT.md`.
+
 ## Workflow
 
 ### 1. Load and confirm the contract
@@ -24,6 +28,7 @@ This precondition exists because agent repair without an upstream contract has a
 Read `DISCOVERY.md`. State back to the user, in two or three sentences:
 
 - What the app appears to do
+- The Repairability verdict (and, if `partially-runnable`, which gaps are explicitly NOT being built)
 - What the Mechanical Definition of Done requires
 - Which blockers will be worked through
 
@@ -157,6 +162,7 @@ Produce `IMPLEMENTATION_SUMMARY.md` at repo root:
 - Promoting unverified claims to CLAUDE.md — pollutes durable guidance with assumptions
 - Continuing to grind on a blocker after two genuine attempts — mark deferred and move on
 - Removing business logic just because it looks old or doesn't match modern patterns
+- Building a never-built gap because it "blocks" a DoD item — that's feature work in disguise; surface it as a DoD amendment or a `not-repairable` escalation instead
 - Committing generated build artifacts — the build writes to the config's `outDir` (read it; don't assume `dist/`); gitignore that folder plus `node_modules` and caches before staging, so a repair never commits build output (a newly-created *lockfile*, though, you keep)
 
 ## Research grounding

@@ -57,6 +57,9 @@ Write the output to `DISCOVERY.md` at the repository root. Use this structure:
 ```markdown
 # DISCOVERY.md
 
+## Repairability verdict
+[repairable | partially-runnable | not-repairable] — [one-sentence justification, citing evidence] [tag]
+
 ## Repository shape
 - Type: [single project | monorepo with N workspaces]
 - Languages: [list]
@@ -78,8 +81,13 @@ Write the output to `DISCOVERY.md` at the repository root. Use this structure:
 - ...
 
 ## Blockers preventing local startup
+[Fixable defects only — things that exist but are broken. A missing feature is not a blocker; it goes under Gaps.]
 1. [Title] — [evidence] — [tag] — [severity: critical/high/medium]
 2. ...
+
+## Gaps (never built)
+[Functionality that is referenced but was never implemented: stub bodies, imports of modules that don't exist, README/route/schema features with no code behind them. Write "None found." if there are none.]
+1. [Title] — [evidence] — [tag]
 
 ## Proposed Mechanical Definition of Done
 The repair phase is done when ALL of these check:
@@ -97,16 +105,25 @@ The repair phase is done when ALL of these check:
 [Things the human must decide before repair starts. Be specific.]
 ```
 
+**Choosing the Repairability verdict.** Blockers and gaps are different kinds, not different severities — a blocker is broken code that exists; a gap can't be "fixed," only built, and building it is feature work outside repair's scope. The verdict follows from the split:
+
+- `repairable` — every obstacle is a fixable blocker; the Mechanical Definition of Done is achievable by repair alone.
+- `partially-runnable` — the core app can be made to boot, but some of its advertised functionality is a gap. The DoD covers only what exists; list each gap so the user knows exactly what repair will NOT deliver.
+- `not-repairable` — the thing the user wants to run was never built (essential components are absent, not broken). The honest deliverable is this verdict itself, with the evidence. Do not propose a DoD that quietly substitutes "build the missing pieces" for repair.
+
+Gaps never appear as DoD checkboxes. If a gap blocks the smoke check, that is evidence for `partially-runnable` or `not-repairable` — not a reason to add "implement X" to the plan.
+
 Note on the smoke check for **hardware- or service-coupled apps**: if the one end-to-end assertion can't be run without something you can't supply — a physical device, a paid/external API, real credentials, a running database — say so explicitly. Make it a ratification Open Question and mark that DoD item `requires: <X>` instead of a plain checkbox. Never fake a smoke check or silently drop it; "this needs the camera / DB / API key to verify" is the correct, honest output, not a green check you didn't earn.
 
 ### 6. Stop for ratification
 
 Do NOT proceed to repair. After writing DISCOVERY.md, present a short summary in chat and ask the user to:
 
-1. Review the proposed Definition of Done — these are the mechanical checks that will determine when repair is complete
-2. Confirm scope (especially for monorepos)
-3. Resolve any open questions
-4. Approve, modify, or reject
+1. Confirm the Repairability verdict — it decides whether repair runs at all, and on what subset
+2. Review the proposed Definition of Done — these are the mechanical checks that will determine when repair is complete
+3. Confirm scope (especially for monorepos)
+4. Resolve any open questions
+5. Approve, modify, or reject
 
 When the user approves, they should invoke the `repair` skill in a fresh prompt that references the ratified DISCOVERY.md.
 
@@ -118,6 +135,8 @@ When the user approves, they should invoke the `repair` skill in a fresh prompt 
 - Trying to discover an entire monorepo in one pass. Pick a workspace.
 - Recommending fixes during discovery. This phase is observation only.
 - Continuing into repair without explicit user ratification.
+- Filing a never-built gap as a blocker. A gap can't be fixed, only built — listing it as a blocker hands repair feature work in disguise.
+- Defaulting to `repairable` to be agreeable. If the evidence says the app was never finished, `not-repairable` is the useful answer, not a failure of the discovery.
 
 ## Research grounding
 
