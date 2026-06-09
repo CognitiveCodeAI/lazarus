@@ -25,24 +25,27 @@ The emotional pitch: **"Is it actually ready?"** You wrote the code, but is it r
 Lazarus works on *any* repo: one you inherited, an open-source project, your own active code, healthy or broken. It does two jobs.
 
 - **🔧 Make it run.** Point it at code that won't start (or that you just don't know yet). It investigates, proposes a plan with a concrete "done" checklist you approve, then works through the blockers until the app boots — and writes down what actually worked so the next person doesn't start from zero.
-- **🧭 Assess it.** Get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on or hand to a client. Nothing in the repo changes.
+- **🧭 Assess it — and, if you choose, fix it.** Get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on, hand to a client — or have executed finding-by-finding by `audit-repair`, each behind your approval. The audit itself changes nothing.
 
 The name is the namesake: it resurrects dead codebases. But it's just as useful on healthy code you want understood, assessed, or made runnable.
 
 ---
 
-## 3. The three skills + the guard
+## 3. The four skills + the guard
 
-Lazarus is **three skills in two workflows**, with a guard running across everything.
+Lazarus is **four skills in two journeys** — *make it run* (`discover` → `repair`) and *assess it, then optionally fix it* (`audit` → `audit-repair`) — with a guard running across everything. Each journey is plan → you approve → execute.
 
 ### `discover` — understand (read-only)
 Runs in Claude Code's **Plan Mode** (read-only at the tool level — it physically cannot edit). It traces how the code is meant to run and writes a `DISCOVERY.md` file containing: a **repairability verdict** (`repairable` / `partially-runnable` / `not-repairable` — broken-but-fixable blockers are split from never-built gaps), what the app appears to do, the inferred setup/build/test/run commands, a ranked list of blockers, and a **Mechanical Definition of Done** — runnable assertions like *"`npm install` exits 0, the server stays up 30 seconds, this endpoint returns 200."* Then it **stops and waits for you to approve.**
 
-### `repair` — act (the only skill that changes code)
+### `repair` — act (changes code, behind your approval)
 It **requires** a ratified `DISCOVERY.md` first, and refuses one whose verdict is `not-repairable` — never-built functionality is feature work, not a repair. It works the blockers in dependency order (environment → install → build → runtime → tests → main flow), logs every command it *actually executed* to a separate `VERIFICATION_REPORT.md`, and promotes only genuinely-verified commands into a durable `CLAUDE.md`. It treats the Definition of Done as a contract — if the contract turns out wrong, it proposes an amendment rather than silently rewriting it.
 
 ### `audit` — assess (read-only, standalone)
-A separate workflow that answers a different question: *should we own this?* It produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, dependency health, testing, frontend/accessibility, and a phased modernization plan. It is deliberately decoupled: it doesn't depend on discover or repair, and its report is a deliverable for a human (e.g. handed to a client), not an input to the other skills.
+A separate journey that answers a different question: *should we own this?* It produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, dependency health, testing, frontend/accessibility, and a phased modernization plan. It is deliberately decoupled from discover and repair: its report is a deliverable for a human (e.g. handed to a client) — and, only if you choose, the input `audit-repair` executes.
+
+### `audit-repair` — act on the audit (optional, changes code behind your approval)
+The strategic apply phase, mirroring `discover → repair`. It requires a **ratified** `CODEBASE_AUDIT.md` and executes its §11 Top 10 Action Items **one finding at a time** — ratify → act → verify against each item's acceptance check — in modernization-plan order (safety rails before refactors), behind the same guard. Its outputs are `AUDIT_`-prefixed (`AUDIT_VERIFICATION_REPORT.md`, `AUDIT_IMPLEMENTATION_SUMMARY.md`) so they never collide with repair's files. The audit never requires it — a report you never act on is still a complete, useful outcome.
 
 ### The guard — a deterministic safety floor
 A `PreToolUse` hook (one small bash script, `check-destructive.sh`) inspects every shell command *before* it runs. It reads the command as JSON on standard input, extracts it precisely (via `jq` / `python3` / `python` / `perl`), and refuses anything matching ~25+ destructive patterns: `rm -rf /`, `git push --force`, `git reset --hard origin`, `DROP TABLE`, `terraform destroy`, `kubectl delete`, `npm publish`, and more. It **fails closed** (if no JSON parser exists, it blocks everything rather than letting commands through), and **exit code 2 = deny.** This is not an instruction the model can talk itself out of — it runs outside the model and returns "no."
@@ -57,7 +60,7 @@ Every design choice traces to a specific way agents fail:
 - **A Mechanical Definition of Done.** Discovery doesn't end with "looks done." It ends with runnable assertions, and repair isn't finished until those actually pass.
 - **Forensic file separation.** `DISCOVERY.md` (what we believed *before*) and `VERIFICATION_REPORT.md` (what we observed *during*) are kept as separate files, never edited in place — so when something breaks three weeks later you can see exactly what was assumed vs. proven.
 - **Plan Mode is structural enforcement.** Discover and audit run read-only at the tool level — a guarantee, not a request.
-- **The human ratification gate.** *You* own the definition of "done." Discover stops and waits; repair only runs against a plan you approved. That gate is the whole safety property — which is why running it fully autonomous is explicitly discouraged.
+- **The human ratification gate.** *You* own the definition of "done." Discover stops and waits; repair only runs against a plan you approved — and the same gate guards the other journey: audit-repair only runs against an audit you ratified. That gate is the whole safety property — which is why running it fully autonomous is explicitly discouraged.
 
 ---
 
@@ -65,8 +68,9 @@ Every design choice traces to a specific way agents fail:
 
 The repository *is* a Claude Code plugin marketplace with a small, growing family:
 
-- **`lazarus`** — the core plugin: the three skills, a read-only Haiku-tier explorer subagent (`repo-explorer`) for mapping huge repos cheaply, and the guard hook.
+- **`lazarus`** — the core plugin: the four skills, a read-only Haiku-tier explorer subagent (`repo-explorer`) for mapping huge repos cheaply, and the guard hook.
 - **`lazarus-github`** — an optional companion plugin that turns an audit's "Top 10 Action Items" into GitHub Issues (it ratifies before creating, and de-duplicates so re-running never makes duplicates).
+- **`lazarus-forge`** — an optional companion for extension authors: a pre-build **design review** gate that pressure-tests a proposed Claude Code skill/plugin/agent/MCP/hook design and returns a single verdict (build / build-with-changes / don't-build / needs-more-detail) before anything is built.
 
 The design principle: **anything outward-facing ships as an opt-in sibling plugin, never bundled into core.** That keeps the three-command core install zero-config — if you don't install the companion, its dependencies and failure modes never reach you. Future integrations (Linear, Jira, Slack) would be siblings of the same shape. The ecosystem grows by addition, not by feature flags.
 
@@ -76,7 +80,7 @@ Install (three commands, one at a time, in a `claude` session):
 /plugin install lazarus@cognitivecode
 /reload-plugins
 ```
-Commands are namespaced: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit`, and `/lazarus-github:issues`.
+Commands are namespaced: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit`, `/lazarus:audit-repair`, plus the companions' `/lazarus-github:issues` and `/lazarus-forge:design-review`.
 
 ---
 
@@ -131,9 +135,9 @@ You don't have to be a principal engineer to get a principal engineer's read. Th
 ## 10. Fast facts
 
 - **Name / tagline:** Lazarus — "Bring your codebase alive. Before production." A Claude Code plugin by Cognitive Code.
-- **Two workflows:** `discover → (you approve) → repair` ("make it run"); `audit` ("assess it," standalone).
+- **Two journeys:** `discover → (you approve) → repair` ("make it run"); `audit → (you ratify) → audit-repair` ("assess it, then optionally fix it" — the audit also stands alone).
 - **The guard:** deterministic `PreToolUse` hook, reads JSON on stdin, blocks ~25+ destructive patterns, fails closed, exit 2 = deny.
 - **Safety pillars:** confidence tags, mechanical Definition of Done, forensic file separation, Plan Mode read-only, human ratification gate.
-- **Ecosystem:** core `lazarus` + optional `lazarus-github` (audit → GitHub Issues); outward-facing features are opt-in sibling plugins.
-- **Releases:** v0.1.0 (first public), v0.2.0 (the ecosystem + companion plugin), v0.2.1 (hardening from real dogfood runs), v0.3.0 (/discover surfaced in the slash menu; companion renamed lazarus-backlog → lazarus-github).
+- **Ecosystem:** core `lazarus` + optional `lazarus-github` (audit → GitHub Issues) + optional `lazarus-forge` (pre-build design review); outward-facing features are opt-in sibling plugins.
+- **Releases:** v0.1.0 (first public), v0.2.0 (the ecosystem + companion plugin), v0.2.1 (hardening from real dogfood runs), v0.3.0 (/discover surfaced in the slash menu; companion renamed lazarus-backlog → lazarus-github), v0.4.0 (audit-repair — the audit's apply phase — plus lazarus-forge).
 - **Open source, MIT licensed; macOS & Linux (WSL on Windows); installs in three commands, no API keys, no signup.**
