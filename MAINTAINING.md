@@ -4,16 +4,19 @@ This repository **is** the marketplace.
 
 ```
 lazarus/                 ← this directory IS the GitHub repo root
-├── .claude-plugin/marketplace.json        ← lists BOTH plugins; "name" = cognitivecode (the @handle)
+├── .claude-plugin/marketplace.json        ← lists ALL plugins; "name" = cognitivecode (the @handle)
 ├── plugins/lazarus/                        ← core
 │   ├── .claude-plugin/plugin.json          ← plugin manifest (no version → git SHA is the version)
-│   ├── skills/{discover,repair,audit}/SKILL.md
+│   ├── skills/{discover,repair,audit,audit-repair,presentation}/SKILL.md
 │   ├── agents/repo-explorer.md
 │   ├── hooks/hooks.json                     ← auto-loaded; do NOT also list it in plugin.json
 │   └── scripts/check-destructive.sh         ← the guard (must stay executable / git mode 100755)
-└── plugins/lazarus-github/                ← optional companion (audit's §11 → GitHub Issues)
+├── plugins/lazarus-github/                ← optional companion (audit's §11 → GitHub Issues)
+│   ├── .claude-plugin/plugin.json
+│   └── skills/issues/SKILL.md
+└── plugins/lazarus-forge/                 ← optional companion (pre-build design review)
     ├── .claude-plugin/plugin.json
-    └── skills/issues/SKILL.md
+    └── skills/design-review/SKILL.md
 ```
 
 **Pushing updates.** `plugin.json` deliberately omits `version`, so Claude Code uses the git commit SHA — every push is a new version and `claude plugin update` pulls it, no number to bump. (If you'd rather have named releases, add `"version"` and bump it on every change — but if you set it and forget to bump, updates silently stop.)
