@@ -278,7 +278,7 @@ Use <b>WSL</b>. The guard is a bash hook (<code>scripts/check-destructive.sh</co
 <details>
 <summary><b>How do updates work?</b></summary>
 <br/>
-Run <code>/plugin update lazarus@cognitivecode</code> (and <code>lazarus-github</code> if you installed it). The plugin is git-SHA-versioned, so <code>/plugin update</code> always pulls the latest <code>main</code> — there's no version number you have to match. Tagged releases like <code>v0.2.1</code> are human-readable changelog markers (see <b>Releases</b>), not something you pin to.
+Two steps. <b>1)</b> Run <code>/plugin update lazarus@cognitivecode</code> (and the same for <code>lazarus-github</code> / <code>lazarus-forge</code> if you installed them). <b>2)</b> Run <code>/reload-plugins</code> (or restart <code>claude</code>) — same rule as installing: the updated skills, hooks, and guard don't go live in your session until you reload. The plugin is git-SHA-versioned, so <code>/plugin update</code> always pulls the latest <code>main</code> — there's no version number you have to match. Tagged releases like <code>v0.5.0</code> are human-readable changelog markers (see <b>Releases</b>), not something you pin to. Check what you're on with <code>/plugin list</code>.
 </details>
 
 <details>
