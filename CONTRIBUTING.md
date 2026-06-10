@@ -11,12 +11,12 @@ Thanks for helping raise dead codebases! 🧟 Issues, ideas, and PRs are all wel
 
 ## Repo layout
 
-This repo **is** the plugin marketplace. It ships two plugins — the **core** plugin and an optional **sibling**:
+This repo **is** the plugin marketplace. It ships three plugins — the **core** plugin and two optional **siblings**:
 
 ```
 plugins/lazarus/                 # core plugin
 ├── .claude-plugin/plugin.json   # manifest (NO version field — git SHA is the version)
-├── skills/                      # discover, repair, audit (SKILL.md each)
+├── skills/                      # discover, repair, audit, audit-repair, presentation (SKILL.md each)
 ├── agents/repo-explorer.md      # read-only Haiku exploration subagent
 ├── hooks/hooks.json             # wires the guard as a PreToolUse hook (auto-loaded)
 └── scripts/check-destructive.sh # the destructive-command guard
@@ -24,9 +24,13 @@ plugins/lazarus/                 # core plugin
 plugins/lazarus-github/          # optional sibling — files an audit's Top 10 as GitHub Issues
 ├── .claude-plugin/plugin.json
 └── skills/issues/SKILL.md
+
+plugins/lazarus-forge/           # optional sibling — pre-build design review for new skills/plugins
+├── .claude-plugin/plugin.json
+└── skills/design-review/SKILL.md
 ```
 
-**Sibling-plugin pattern.** Anything outward-facing (filing GitHub Issues, posting to Slack, Linear/Jira) ships as a separate opt-in plugin in this same marketplace — never bundled into core — so the core install stays zero-config and a `gh`/API failure can't reach anyone who didn't opt in. `lazarus-github` is the first sibling.
+**Sibling-plugin pattern.** Anything outward-facing (filing GitHub Issues, posting to Slack, Linear/Jira) ships as a separate opt-in plugin in this same marketplace — never bundled into core — so the core install stays zero-config and a `gh`/API failure can't reach anyone who didn't opt in. `lazarus-github` was the first sibling; `lazarus-forge` the second.
 
 ## Dev loop
 

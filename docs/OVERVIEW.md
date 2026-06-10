@@ -22,18 +22,19 @@ The emotional pitch: **"Is it actually ready?"** You wrote the code, but is it r
 
 ## 2. What it does — two jobs, on ANY codebase
 
-Lazarus works on *any* repo: one you inherited, an open-source project, your own active code, healthy or broken. It does two jobs.
+Lazarus works on *any* repo: one you inherited, an open-source project, your own active code, healthy or broken. It does three jobs.
 
 - **🔧 Make it run.** Point it at code that won't start (or that you just don't know yet). It investigates, proposes a plan with a concrete "done" checklist you approve, then works through the blockers until the app boots — and writes down what actually worked so the next person doesn't start from zero.
 - **🧭 Assess it — and, if you choose, fix it.** Get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on, hand to a client — or have executed finding-by-finding by `audit-repair`, each behind your approval. The audit itself changes nothing.
+- **💅 Make it presentable.** A DevRel-grade, read-only review of everything a stranger sees before the source — README, community-health files, markdown accessibility — graded against cited standards, never taste. Produces `PRESENTATION_AUDIT.md`; changes nothing.
 
 The name is the namesake: it resurrects dead codebases. But it's just as useful on healthy code you want understood, assessed, or made runnable.
 
 ---
 
-## 3. The four skills + the guard
+## 3. The five skills + the guard
 
-Lazarus is **four skills in two journeys** — *make it run* (`discover` → `repair`) and *assess it, then optionally fix it* (`audit` → `audit-repair`) — with a guard running across everything. Each journey is plan → you approve → execute.
+Lazarus is **five skills in three journeys** — *make it run* (`discover` → `repair`), *assess it, then optionally fix it* (`audit` → `audit-repair`), and *make it presentable* (`presentation`, whose apply phase `presentation-repair` is the named next tool) — with a guard running across everything. Each journey is plan → you approve → execute.
 
 ### `discover` — understand (read-only)
 Runs in Claude Code's **Plan Mode** (read-only at the tool level — it physically cannot edit). It traces how the code is meant to run and writes a `DISCOVERY.md` file containing: a **repairability verdict** (`repairable` / `partially-runnable` / `not-repairable` — broken-but-fixable blockers are split from never-built gaps), what the app appears to do, the inferred setup/build/test/run commands, a ranked list of blockers, and a **Mechanical Definition of Done** — runnable assertions like *"`npm install` exits 0, the server stays up 30 seconds, this endpoint returns 200."* Then it **stops and waits for you to approve.**
@@ -46,6 +47,9 @@ A separate journey that answers a different question: *should we own this?* It p
 
 ### `audit-repair` — act on the audit (optional, changes code behind your approval)
 The strategic apply phase, mirroring `discover → repair`. It requires a **ratified** `CODEBASE_AUDIT.md` and executes its §11 Top 10 Action Items **one finding at a time** — ratify → act → verify against each item's acceptance check — in modernization-plan order (safety rails before refactors), behind the same guard. Its outputs are `AUDIT_`-prefixed (`AUDIT_VERIFICATION_REPORT.md`, `AUDIT_IMPLEMENTATION_SUMMARY.md`) so they never collide with repair's files. The audit never requires it — a report you never act on is still a complete, useful outcome.
+
+### `presentation` — make it presentable (read-only, standalone)
+The DevRel analog of `audit`: a read-only, project-type-aware review of the repo's **public files** — README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, issue/PR templates, markdown accessibility — producing one artifact, `PRESENTATION_AUDIT.md`, behind the same ratify gate. Its defining rule: **no taste-only findings.** Every finding cites a named standard (GitHub's community-profile checklist, CommonMark, WCAG, Diátaxis, the README-content research) and carries file/line evidence; a self-check gate rejects anything else. It detects the project type (Claude Code plugin / Python / Node CLI / Node library) and applies the matching conventions — stopping to ask rather than guessing on ambiguous signals. A durable waiver file (`.lazarus/presentation-waivers.yml`) records your deliberate choices so re-runs never nag about them. Structurally read-only: shell, network, and delegation tools are removed from its tool pool via `disallowed-tools` — it audits files; it cannot run commands at all. GitHub *settings* (description, topics, social preview) need `gh` and are deliberately out of scope (a future `lazarus-github` settings skill). The apply phase, `presentation-repair`, is the named fast-follow.
 
 ### The guard — a deterministic safety floor
 A `PreToolUse` hook (one small bash script, `check-destructive.sh`) inspects every shell command *before* it runs. It reads the command as JSON on standard input, extracts it precisely (via `jq` / `python3` / `python` / `perl`), and refuses anything matching ~25+ destructive patterns: `rm -rf /`, `git push --force`, `git reset --hard origin`, `DROP TABLE`, `terraform destroy`, `kubectl delete`, `npm publish`, and more. It **fails closed** (if no JSON parser exists, it blocks everything rather than letting commands through), and **exit code 2 = deny.** This is not an instruction the model can talk itself out of — it runs outside the model and returns "no."
@@ -68,7 +72,7 @@ Every design choice traces to a specific way agents fail:
 
 The repository *is* a Claude Code plugin marketplace with a small, growing family:
 
-- **`lazarus`** — the core plugin: the four skills, a read-only Haiku-tier explorer subagent (`repo-explorer`) for mapping huge repos cheaply, and the guard hook.
+- **`lazarus`** — the core plugin: the five skills, a read-only Haiku-tier explorer subagent (`repo-explorer`) for mapping huge repos cheaply, and the guard hook.
 - **`lazarus-github`** — an optional companion plugin that turns an audit's "Top 10 Action Items" into GitHub Issues (it ratifies before creating, and de-duplicates so re-running never makes duplicates).
 - **`lazarus-forge`** — an optional companion for extension authors: a pre-build **design review** gate that pressure-tests a proposed Claude Code skill/plugin/agent/MCP/hook design and returns a single verdict (build / build-with-changes / don't-build / needs-more-detail) before anything is built.
 
@@ -80,7 +84,7 @@ Install (three commands, one at a time, in a `claude` session):
 /plugin install lazarus@cognitivecode
 /reload-plugins
 ```
-Commands are namespaced: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit`, `/lazarus:audit-repair`, plus the companions' `/lazarus-github:issues` and `/lazarus-forge:design-review`.
+Commands are namespaced: `/lazarus:discover`, `/lazarus:repair`, `/lazarus:audit`, `/lazarus:audit-repair`, `/lazarus:presentation`, plus the companions' `/lazarus-github:issues` and `/lazarus-forge:design-review`.
 
 ---
 
@@ -135,9 +139,9 @@ You don't have to be a principal engineer to get a principal engineer's read. Th
 ## 10. Fast facts
 
 - **Name / tagline:** Lazarus — "Bring your codebase alive. Before production." A Claude Code plugin by Cognitive Code.
-- **Two journeys:** `discover → (you approve) → repair` ("make it run"); `audit → (you ratify) → audit-repair` ("assess it, then optionally fix it" — the audit also stands alone).
+- **Three journeys:** `discover → (you approve) → repair` ("make it run"); `audit → (you ratify) → audit-repair` ("assess it, then optionally fix it" — the audit also stands alone); `presentation` ("make it presentable" — standalone report; apply phase `presentation-repair` is the named next tool).
 - **The guard:** deterministic `PreToolUse` hook, reads JSON on stdin, blocks ~25+ destructive patterns, fails closed, exit 2 = deny.
 - **Safety pillars:** confidence tags, mechanical Definition of Done, forensic file separation, Plan Mode read-only, human ratification gate.
 - **Ecosystem:** core `lazarus` + optional `lazarus-github` (audit → GitHub Issues) + optional `lazarus-forge` (pre-build design review); outward-facing features are opt-in sibling plugins.
-- **Releases:** v0.1.0 (first public), v0.2.0 (the ecosystem + companion plugin), v0.2.1 (hardening from real dogfood runs), v0.3.0 (/discover surfaced in the slash menu; companion renamed lazarus-backlog → lazarus-github), v0.4.0 (audit-repair — the audit's apply phase — plus lazarus-forge).
+- **Releases:** v0.1.0 (first public), v0.2.0 (the ecosystem + companion plugin), v0.2.1 (hardening from real dogfood runs), v0.3.0 (/discover surfaced in the slash menu; companion renamed lazarus-backlog → lazarus-github), v0.4.0 (audit-repair — the audit's apply phase — plus lazarus-forge), v0.5.0 (the repairability verdict — discover learns to say "this was never built"), v0.6.0 (presentation — the DevRel audit, which graded this very repo before shipping).
 - **Open source, MIT licensed; macOS & Linux (WSL on Windows); installs in three commands, no API keys, no signup.**
