@@ -23,26 +23,28 @@ Point Claude at a repository and let Lazarus help make it: Alive again, document
 
 - 🔧 **Make it run** (`discover` → `repair`) — point it at code that won't start, or that you simply don't know yet. It investigates, proposes a plan with a concrete "done" checklist you approve, then works through the blockers until the app boots — and writes down what actually worked so the next person (or the next you) doesn't start from zero.
 - 🧭 **Assess it — and, if you choose, fix it** (`audit` → `audit-repair`) — get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on, hand to a client — or have executed finding-by-finding, each behind your approval.
-- 💅 **Make it presentable** (`presentation`) — a DevRel-grade, read-only review of everything a stranger sees *before* the source: README, LICENSE, CONTRIBUTING, security policy, templates, markdown accessibility. Every finding cites a real standard (GitHub's community profile, CommonMark, WCAG) — never taste — and lands in a `PRESENTATION_AUDIT.md` you act on.
+- 💅 **Make it presentable — and, if you choose, fix that too** (`presentation` → `presentation-repair`) — a DevRel-grade, read-only review of everything a stranger sees *before* the source: README, LICENSE, CONTRIBUTING, security policy, templates, markdown accessibility. Every finding cites a real standard (GitHub's community profile, CommonMark, WCAG) — never taste. Then `presentation-repair` executes the findings you ratify, asking for the facts only you own (which license? what security contact?) instead of inventing them.
 
 Everything runs behind a guard that blocks destructive commands before they ever run — and **nothing changes until you approve a plan.** It'll resurrect a dead repo that won't even start (the namesake), but it's just as useful on healthy code you want made runnable, understood, assessed, or ready to show the world.
 
-## 🧭 Three goals, five commands
+## 🧭 Three goals, six commands
 
-Lazarus looks like five skills, but you only ever choose a **goal**. Each flows *plan → you approve → execute* — the commands are just the steps:
+Lazarus looks like six skills, but you only ever choose a **goal**. Each flows *plan → you approve → execute* — the commands are just the steps:
 
 | You want… | The journey | How it flows |
 |---|---|---|
 | **It running** — *"it won't start"* · *"I'm lost in this repo"* · *"I need to change it safely"* | 🔍 **`discover`** → 🧑 *you approve* → 🔧 **`repair`** | `discover` investigates read-only and writes a plan with a runnable "done" checklist; you approve it; `repair` works the blockers until each one passes — recording what actually worked in `CLAUDE.md`. |
 | **It assessed — and, if you choose, fixed** — *"what shape is this in?"* · *"maintain, refactor, or rewrite?"* · *"now go fix what the audit found"* | 🧭 **`audit`** → 🧑 *your call* → 🛠️ **`audit-repair`** | `audit` writes a read-only, 12-section principal-engineer report. Stop there — it's a deliverable you can hand to a client — or ratify its Top 10 and `audit-repair` executes them **one at a time**, verifying each against its acceptance check. |
-| **It presentable** — *"polish my README"* · *"is this repo ready to go public?"* · *"set up CONTRIBUTING / templates"* | 💅 **`presentation`** → 🧑 *you approve* → 📝 `PRESENTATION_AUDIT.md` | Read-only, project-type-aware audit of your README, community-health files, and markdown accessibility — every finding cites a named standard, with a waiver file so it never nags you about deliberate choices. Its apply phase (`presentation-repair`) is the next tool coming, exactly as `audit-repair` followed `audit`. |
+| **It presentable — and, if you choose, fixed** — *"polish my README"* · *"is this repo ready to go public?"* · *"set up CONTRIBUTING / templates"* | 💅 **`presentation`** → 🧑 *your call* → 🧰 **`presentation-repair`** | `presentation` writes a read-only, project-type-aware audit — every finding citing a named standard, with a waiver file so it never nags you about deliberate choices. Stop there, or ratify the findings and `presentation-repair` executes them one at a time — re-checking each before editing, asking for facts only you own (license, security contact) instead of inventing them, and running **zero commands** the whole time. |
 
 And the whole time — every journey, every step — the 🛡️ **guard** blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more destructive commands before they ever execute.
 
 > [!NOTE]
-> **Don't memorize the order — start anywhere.** The skills route you: type `/lazarus:repair` with no plan and it stops and offers to run `discover` first; finish `discover` and it names the next command; `audit-repair` refuses to run until an `audit` is ratified. The journeys stay independent — none requires another, and `audit` or `presentation` are perfectly useful as reports you never act on.
+> **Don't memorize the order — start anywhere.** The skills route you: type `/lazarus:repair` with no plan and it stops and offers to run `discover` first; finish `discover` and it names the next command; `audit-repair` refuses to run until an `audit` is ratified, and `presentation-repair` refuses without a ratified `presentation` audit. The journeys stay independent — none requires another, and `audit` or `presentation` are perfectly useful as reports you never act on.
 
 **New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it. For the whole picture in one read, see the [complete project overview](docs/OVERVIEW.md).
+
+**Contents:** [Three goals, six commands](#-three-goals-six-commands) · [Install (no signup, no SSH keys)](#-install-no-signup-no-ssh-keys) · [Watch it work](#-watch-it-work) · [The journeys](#%EF%B8%8F-the-journeys) · [The part that makes it safe to actually run](#%EF%B8%8F-the-part-that-makes-it-safe-to-actually-run) · [lazarus-github: audit findings as GitHub Issues](#-lazarus-github--file-audit-findings-as-github-issues) · [FAQ](#-faq) · [Star this repo](#-star-this-repo-it-decides-what-comes-next)
 
 ## ⚡ Install (no signup, no SSH keys)
 
@@ -101,6 +103,9 @@ flowchart LR
 
     B -->|make it presentable| M["💅 lazarus:presentation<br/>read-only"]
     M --> N["📝 PRESENTATION_AUDIT.md<br/>scorecard · cited findings<br/>· recommended fixes"]
+    N -.->|"optional"| O(["🧑 you ratify<br/>the findings"])
+    O --> P["🧰 lazarus:presentation-repair<br/>one finding at a time, zero shell"]
+    P --> Q["✅ findings fixed +<br/>PRESENTATION_CHANGES.md"]
 
     style A fill:#fee2e2,stroke:#ef4444,color:#111
     style G fill:#dcfce7,stroke:#22c55e,color:#111
@@ -108,7 +113,9 @@ flowchart LR
     style N fill:#e0f2fe,stroke:#0ea5e9,color:#111
     style E fill:#fef9c3,stroke:#eab308,color:#111
     style J fill:#fef9c3,stroke:#eab308,color:#111
+    style O fill:#fef9c3,stroke:#eab308,color:#111
     style L fill:#dcfce7,stroke:#22c55e,color:#111
+    style Q fill:#dcfce7,stroke:#22c55e,color:#111
 ```
 
 **Type the command, or just describe what you want** — both work. The fast path is the command itself (start typing `/discover`, `/repair`, `/audit`, or `/presentation` and it autocompletes); plain English triggers the same skill.
@@ -127,11 +134,12 @@ flowchart LR
 | **`/lazarus:audit`** | *"review this code"* · *"audit this repo"* · *"what should we fix first?"* · *"refactor or rewrite?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased plan. **Read-only**; feeds `audit-repair` if you choose to act on it. |
 | **`/lazarus:audit-repair`** | *"execute the audit"* · *"fix the audit findings"* · *"work the Top 10 action items"* · *"apply the modernization plan"* | Executes a ratified `CODEBASE_AUDIT.md` §11 **one finding at a time** — ratify → act → verify against each item's acceptance check — safety-rails first, behind the guard. The strategic apply phase, exactly as `repair` is for `discover`. |
 
-**Standalone — make it presentable**
+**Journey 3 — make it presentable, then (optionally) fix it**
 
 | Command | Also triggers on… | What it does |
 |---|---|---|
 | **`/lazarus:presentation`** | *"polish my README"* · *"is this repo ready to go public?"* · *"DevRel review"* · *"set up CONTRIBUTING / CODE_OF_CONDUCT / issue templates"* | **Read-only**, project-type-aware audit of the repo's public files — README, community-health files, markdown accessibility — every finding citing a named standard (GitHub community profile, CommonMark, WCAG, Diátaxis). Writes `PRESENTATION_AUDIT.md` after you approve; a waiver file keeps your deliberate choices from being re-flagged. GitHub *settings* (topics, social preview) are out of scope — they need `gh`, which this skill structurally cannot run. |
+| **`/lazarus:presentation-repair`** | *"apply the presentation audit"* · *"fix the presentation findings"* · *"scaffold the community files"* · *"fix my README per the audit"* | Executes a ratified `PRESENTATION_AUDIT.md` **one finding at a time** — re-observes before every edit (a finding fixed since the audit is logged `already-satisfied`, untouched), asks for facts only you own (license choice, security contact) **instead of inventing them**, refuses fixes that reach outside the presentation file family, and verifies each change against its rubric check in `PRESENTATION_CHANGES.md`. **Zero shell** — like `presentation`, it cannot run a command at all. |
 
 > [!TIP]
 > **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
@@ -212,7 +220,7 @@ This repo is a Claude Code **plugin marketplace** with a small, growing family:
 lazarus/  ← the marketplace
 │
 ├── plugins/lazarus/                 🧟 core   — /plugin install lazarus@cognitivecode
-│   ├── skills/discover · repair · audit · audit-repair · presentation   the workflows
+│   ├── skills/discover · repair · audit · audit-repair · presentation · presentation-repair
 │   ├── agents/repo-explorer                read-only Haiku subagent for huge repos
 │   └── hooks/ + scripts/check-destructive.sh   the deterministic guard
 │
@@ -269,13 +277,13 @@ The skill reads `CODEBASE_AUDIT.md` §11, shows you the proposed issues, lets yo
 <details>
 <summary><b>I installed it but <code>/lazarus:discover</code> (or the guard) does nothing. Why?</b></summary>
 <br/>
-You almost certainly skipped <code>/reload-plugins</code>. Installing registers the plugin; its skills, hooks, and guard only go live after you run <code>/reload-plugins</code> (or restart <code>claude</code>) in that session. Run it once and the <code>/lazarus:discover</code>, <code>/lazarus:repair</code>, <code>/lazarus:audit</code>, <code>/lazarus:audit-repair</code>, and <code>/lazarus:presentation</code> commands appear.
+You almost certainly skipped <code>/reload-plugins</code>. Installing registers the plugin; its skills, hooks, and guard only go live after you run <code>/reload-plugins</code> (or restart <code>claude</code>) in that session. Run it once and the <code>/lazarus:discover</code>, <code>/lazarus:repair</code>, <code>/lazarus:audit</code>, <code>/lazarus:audit-repair</code>, <code>/lazarus:presentation</code>, and <code>/lazarus:presentation-repair</code> commands appear.
 </details>
 
 <details>
 <summary><b>Will it actually change my code without asking?</b></summary>
 <br/>
-Discovery, audit, and presentation are read-only (Plan Mode — and presentation can't even run shell commands; they're removed from its tool pool). Repair and audit-repair change code — but only after you ratify a plan (the "done" checklist, or the audit's Top 10), and the guard blocks destructive shell commands throughout. You stay in the loop at the one decision that matters: ratifying what "done" means.
+Discovery, audit, and presentation are read-only (Plan Mode — and presentation can't even run shell commands; they're removed from its tool pool). Repair, audit-repair, and presentation-repair change files — but only after you ratify a plan (the "done" checklist, the audit's Top 10, or the presentation findings), and the guard blocks destructive shell commands throughout (presentation-repair goes further: it runs no commands at all). You stay in the loop at the one decision that matters: ratifying what "done" means.
 </details>
 
 <details>
@@ -314,7 +322,7 @@ It's a 1-second click, and it does two things: it helps the next person staring 
 
 I have **more Claude Code tools ready to ship** — I'm releasing them based on real signal. Stars and activity here are how I gauge whether people want them. So a star isn't just a thank-you; it's a vote for the next one.
 
-> ✅ **Just shipped: `/lazarus:presentation`** — a DevRel-grade review of everything a stranger sees before your source code. Every finding cites a real standard (GitHub community profile, CommonMark, WCAG) — never taste. **We pointed it at this very repo before shipping**: it caught a CI pipeline wearing no CI badge, a 300-line README whose project name existed only inside a PNG, and contributor docs one plugin behind reality. All fixed in the same release — receipts in the [v0.6.0 notes](https://github.com/CognitiveCodeAI/lazarus/releases). Next up: **`presentation-repair`**, the apply phase. ⭐ star and [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) to shape what's next.
+> ✅ **Just shipped: `/lazarus:presentation-repair`** — the apply phase that closes the third loop. It executes a ratified presentation audit one finding at a time, **re-checking each before editing** (on our own dogfood run, it correctly detected 7 of 8 findings as already fixed and touched nothing), asking for facts only you own instead of inventing them, and running **zero shell commands** — it can scaffold your SECURITY.md but physically cannot `curl` anything. The table of contents you may have used to navigate this README? *It added that.* Receipts in the [v0.7.0 notes](https://github.com/CognitiveCodeAI/lazarus/releases). ⭐ star and [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) to shape what's next.
 
 > 💬 Got an idea, a bug, or a repo Lazarus choked on? [Open an issue](https://github.com/CognitiveCodeAI/lazarus/issues) or start a [discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) — I read every one.
 
