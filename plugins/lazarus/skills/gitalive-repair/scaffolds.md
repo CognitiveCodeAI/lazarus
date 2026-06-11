@@ -1,6 +1,6 @@
 # Scaffolds — community-health file templates
 
-Neutral starting points for the files `presentation` most often finds missing. Every `«ASK-USER: …»` placeholder MUST be resolved via `AskUserQuestion` before the file is written — **a file is never written with a placeholder still in it.** Adapt tone and detail to the repo (read the README first); these are floors, not ceilings.
+Neutral starting points for the files `gitalive` most often finds missing. Every `«ASK-USER: …»` placeholder MUST be resolved via `AskUserQuestion` before the file is written — **a file is never written with a placeholder still in it.** Adapt tone and detail to the repo (read the README first); these are floors, not ceilings.
 
 ## CONTRIBUTING.md
 
@@ -32,7 +32,7 @@ Open an issue with reproduction steps, expected vs. actual behavior, and your en
 Recommend the **Contributor Covenant** (the de-facto standard GitHub's community profile recognizes) — but adopting a code of conduct is the maintainer's call, and it names an enforcement contact:
 
 - Confirm: «ASK-USER: adopt Contributor Covenant v2.1? And what enforcement contact (email) should it name?»
-- On yes: write the standard Contributor Covenant v2.1 text with the provided contact. On no: offer the waiver path (`community.code-of-conduct` in `.lazarus/presentation-waivers.yml`) instead of a half-hearted custom CoC.
+- On yes: write the standard Contributor Covenant v2.1 text with the provided contact. On no: offer the waiver path (`community.code-of-conduct` in `.lazarus/gitalive-waivers.yml`) instead of a half-hearted custom CoC.
 
 ## SECURITY.md
 

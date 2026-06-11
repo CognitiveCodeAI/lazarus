@@ -16,7 +16,7 @@ This repo **is** the plugin marketplace. It ships three plugins — the **core**
 ```
 plugins/lazarus/                 # core plugin
 ├── .claude-plugin/plugin.json   # manifest (NO version field — git SHA is the version)
-├── skills/                      # discover, repair, audit, audit-repair, presentation, presentation-repair
+├── skills/                      # discover, repair, audit, audit-repair, gitalive, gitalive-repair
 ├── agents/repo-explorer.md      # read-only Haiku exploration subagent
 ├── hooks/hooks.json             # wires the guard as a PreToolUse hook (auto-loaded)
 └── scripts/check-destructive.sh # the destructive-command guard

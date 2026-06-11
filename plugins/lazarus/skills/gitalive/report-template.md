@@ -1,11 +1,11 @@
-# PRESENTATION_AUDIT.md — template and finding schema
+# GITALIVE_AUDIT.md — template and finding schema
 
-The report uses exactly these H2 sections, in this order. The locked order keeps re-audits diffable and lets `presentation-repair` (the future apply skill) parse findings mechanically.
+The report uses exactly these H2 sections, in this order. The locked order keeps re-audits diffable and lets `gitalive-repair` (the future apply skill) parse findings mechanically.
 
 ## The template
 
 ```markdown
-# Presentation Audit
+# GitAlive Audit
 
 ## 1. Scorecard
 - **Project type:** <type> — <one-line evidence> — <[VERIFIED]|[INFERRED]>
@@ -28,7 +28,7 @@ Repo description, topics, social-preview, and homepage are GitHub settings audit
 `lazarus-github` settings skill (they need `gh`). Install that companion for this coverage.
 
 ## 5. Waived Items
-<each waived id + reason, carried from `.lazarus/presentation-waivers.yml`; "None." if empty>
+<each waived id + reason, carried from `.lazarus/gitalive-waivers.yml`; "None." if empty>
 
 ## 6. Self-Check Gate Result
 <the gate checklist from SKILL.md, each line asserted pass before this file was written>
@@ -46,7 +46,7 @@ Grades: **A** = no findings above Low · **B** = Mediums only · **C** = at leas
   confidence: "[VERIFIED]"         # [VERIFIED] observed this run | [INFERRED] | [ASSUMED]
   recommended_fix: "Add an OSI-approved LICENSE (MIT matches plugin.json's `license: MIT`)."
   scope: universal                 # universal | type:<plugin|python|node-cli|node-lib>
-  waived: false                    # true + reason if present in .lazarus/presentation-waivers.yml
+  waived: false                    # true + reason if present in .lazarus/gitalive-waivers.yml
 ```
 
 A finding missing any field — most importantly missing `evidence` or `standard` — must not ship.
