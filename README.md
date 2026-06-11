@@ -2,7 +2,7 @@
 
 <h1>Lazarus</h1>
 
-<img src="assets/banner2.jpg" alt="Lazarus — bring your codebase alive. A Claude Code plugin that discovers, repairs, and audits any codebase behind a deterministic guard." width="100%" />
+<img src="assets/banner2.jpg" alt="Lazarus — bring your codebase alive. A Claude Code plugin that discovers, repairs, and audits any codebase behind a deterministic guard." width="100%" height="100%" />
 
 **Point Claude at any repo — Lazarus makes it run, tells you what to fix, and makes the page worth showing.**
 <br/>Nothing changes until you approve a plan. A guard blocks `rm -rf /` before it ever runs.
