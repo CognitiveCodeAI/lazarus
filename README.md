@@ -2,7 +2,7 @@
 
 <h1>Lazarus</h1>
 
-<img src="assets/banner2.png" alt="Lazarus — bring your codebase alive. A Claude Code plugin that discovers, repairs, and audits any codebase behind a deterministic guard." width="100%" />
+<img src="assets/banner2.jpg" alt="Lazarus — bring your codebase alive. A Claude Code plugin that discovers, repairs, and audits any codebase behind a deterministic guard." width="100%" />
 
 **Point Claude at any repo — Lazarus makes it run, tells you what to fix, and makes the page worth showing.**
 <br/>Nothing changes until you approve a plan. A guard blocks `rm -rf /` before it ever runs.
@@ -73,7 +73,7 @@ A `PreToolUse` hook inspects every shell command *before* it runs and refuses th
 🧟‍♂️ *IT'S ALIVE — now make the repo page prove it.* Your README is the first thing anyone checks to decide whether a project is worth their time. `gitalive` audits everything a visitor sees *before* the source — README, LICENSE, CONTRIBUTING, security policy, templates, accessibility — against **cited standards, never taste**. `gitalive-repair` fixes what you ratify, asking for facts only you own (which license? what security contact?) and running **zero shell commands**.
 
 <div align="center">
-<img src="assets/gitalive-before-after.png" alt="Before and after GitAlive: a standard just-uploaded GitHub repo page — bare file list, two-line README, empty sidebar — next to the same repo with a polished page: bold Lazarus title, hero banner, green CI badge row, table of contents, Install, Usage and FAQ sections, and a filled About sidebar" width="100%" />
+<img src="assets/gitalive-before-after.jpg" alt="Before and after GitAlive: a standard just-uploaded GitHub repo page — bare file list, two-line README, empty sidebar — next to the same repo with a polished page: bold Lazarus title, hero banner, green CI badge row, table of contents, Install, Usage and FAQ sections, and a filled About sidebar" width="100%" />
 </div>
 
 The transformation is real — GitAlive's first run on this very repo caught a CI pipeline wearing no badge, a project name living only inside a PNG, and contributor docs one plugin behind, all fixed behind the ratify gate. Deliberate choices stay quiet: waive an item once and re-runs never nag you about it.
