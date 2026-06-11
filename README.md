@@ -73,10 +73,10 @@ A `PreToolUse` hook inspects every shell command *before* it runs and refuses th
 🧟‍♂️ *IT'S ALIVE — now make the repo page prove it.* Your README is the first thing anyone checks to decide whether a project is worth their time. `gitalive` audits everything a visitor sees *before* the source — README, LICENSE, CONTRIBUTING, security policy, templates, accessibility — against **cited standards, never taste**. `gitalive-repair` fixes what you ratify, asking for facts only you own (which license? what security contact?) and running **zero shell commands**.
 
 <div align="center">
-<img src="assets/gitalive-before-after.svg" alt="Before and after GitAlive on this very repo: before — project name trapped in a PNG with no heading, a CI pipeline with no badge, no table of contents, contributor docs one plugin behind; after — real heading, live CI badge, organized contents, current docs, clean re-audit" width="100%" />
+<img src="assets/gitalive-before-after.png" alt="Before and after GitAlive: a standard just-uploaded GitHub repo page — bare file list, two-line README, empty sidebar — next to the same repo with a polished page: bold Lazarus title, hero banner, green CI badge row, table of contents, Install, Usage and FAQ sections, and a filled About sidebar" width="100%" />
 </div>
 
-That's not a mock-up — it's **this repo**, as GitAlive's first run found it and as it stands after the ratified fixes. Deliberate choices stay quiet: waive an item once and re-runs never nag you about it.
+The transformation is real — GitAlive's first run on this very repo caught a CI pipeline wearing no badge, a project name living only inside a PNG, and contributor docs one plugin behind, all fixed behind the ratify gate. Deliberate choices stay quiet: waive an item once and re-runs never nag you about it.
 
 ## 🧩 The family
 
