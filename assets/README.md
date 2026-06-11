@@ -7,6 +7,7 @@ Images used by the project README and the repo's GitHub presentation.
 | `banner2.png` | Hero image at the top of the README | `README.md` |
 | `demo.svg`    | Animated "Watch it work" terminal | `README.md` |
 | `guard.png`   | Inline image in the "makes it safe to run" section | `README.md` |
+| `gitalive-before-after.svg` | Before/after panel in the "GitAlive" spotlight section | `README.md` |
 | `og-card.png` | Social-preview card (how the repo unfurls on Slack/X/etc.) | GitHub → repo **Settings → General → Social preview** (not referenced from `README.md`) |
 
 **Updating an image.** Replace the file in place and keep the same name, so the README keeps
