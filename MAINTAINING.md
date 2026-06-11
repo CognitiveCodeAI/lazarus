@@ -7,7 +7,7 @@ lazarus/                 ← this directory IS the GitHub repo root
 ├── .claude-plugin/marketplace.json        ← lists ALL plugins; "name" = cognitivecode (the @handle)
 ├── plugins/lazarus/                        ← core
 │   ├── .claude-plugin/plugin.json          ← plugin manifest (no version → git SHA is the version)
-│   ├── skills/{discover,repair,audit,audit-repair,presentation}/SKILL.md
+│   ├── skills/{discover,repair,audit,audit-repair,presentation,presentation-repair}/SKILL.md
 │   ├── agents/repo-explorer.md
 │   ├── hooks/hooks.json                     ← auto-loaded; do NOT also list it in plugin.json
 │   └── scripts/check-destructive.sh         ← the guard (must stay executable / git mode 100755)
