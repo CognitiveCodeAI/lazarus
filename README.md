@@ -4,7 +4,8 @@
 
 <img src="assets/banner2.png" alt="Lazarus — bring your codebase alive. A Claude Code plugin that discovers, repairs, and audits any codebase behind a deterministic guard." width="100%" />
 
-Point Claude at a repository and let Lazarus help make it: Alive again, documented, and audited — behind a guard that **blocks** destructive commands before they ever run.
+**Point Claude at any repo — Lazarus makes it run, tells you what to fix, and makes the page worth showing.**
+<br/>Nothing changes until you approve a plan. A guard blocks `rm -rf /` before it ever runs.
 
 <p>
 <a href="https://github.com/CognitiveCodeAI/lazarus/actions/workflows/ci.yml"><img src="https://github.com/CognitiveCodeAI/lazarus/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
@@ -15,145 +16,78 @@ Point Claude at a repository and let Lazarus help make it: Alive again, document
 <img src="https://img.shields.io/badge/macOS_|_Linux-supported-64748b" alt="macOS and Linux" />
 </p>
 
+<p>
+<a href="#-install">Install</a> ·
+<a href="#-watch-it-work">Watch it work</a> ·
+<a href="#-the-three-journeys">The journeys</a> ·
+<a href="#%EF%B8%8F-the-guard">The guard</a> ·
+<a href="#-gitalive--your-repos-proof-of-life">GitAlive</a> ·
+<a href="#-faq">FAQ</a>
+</p>
+
 </div>
 
----
+## ⚡ Install
 
-**Lazarus** is a Claude Code plugin for working on a codebase with an AI agent you can actually trust. It does **three jobs** on *any* repo — yours, one you inherited, an open-source project, healthy or broken:
+Run these in any `claude` session — **one at a time**:
 
-- 🔧 **Make it run** (`discover` → `repair`) — point it at code that won't start, or that you simply don't know yet. It investigates, proposes a plan with a concrete "done" checklist you approve, then works through the blockers until the app boots — and writes down what actually worked so the next person (or the next you) doesn't start from zero.
-- 🧭 **Assess it — and, if you choose, fix it** (`audit` → `audit-repair`) — get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on, hand to a client — or have executed finding-by-finding, each behind your approval.
-- 💅 **Polish your repo's public page — and, if you choose, fix it too** (`gitalive` → `gitalive-repair`) — not the code: the **README and the files around it** (LICENSE, CONTRIBUTING, security policy, issue templates, markdown accessibility) — everything a visitor sees on your GitHub page *before* reading the source. Every finding cites a real standard (GitHub's community profile, CommonMark, WCAG) — never taste. Then `gitalive-repair` executes the findings you ratify, asking for the facts only you own (which license? what security contact?) instead of inventing them.
-
-Everything runs behind a guard that blocks destructive commands before they ever run — and **nothing changes until you approve a plan.** It'll resurrect a dead repo that won't even start (the namesake), but it's just as useful on healthy code you want made runnable, understood, assessed, or ready to show the world.
-
-## 🧭 Three goals, six commands
-
-Lazarus looks like six skills, but you only ever choose a **goal**. Each flows *plan → you approve → execute* — the commands are just the steps:
-
-| You want… | The journey | How it flows |
-|---|---|---|
-| **It running** — *"it won't start"* · *"I'm lost in this repo"* · *"I need to change it safely"* | 🔍 **`discover`** → 🧑 *you approve* → 🔧 **`repair`** | `discover` investigates read-only and writes a plan with a runnable "done" checklist; you approve it; `repair` works the blockers until each one passes — recording what actually worked in `CLAUDE.md`. |
-| **It assessed — and, if you choose, fixed** — *"what shape is this in?"* · *"maintain, refactor, or rewrite?"* · *"now go fix what the audit found"* | 🧭 **`audit`** → 🧑 *your call* → 🛠️ **`audit-repair`** | `audit` writes a read-only, 12-section principal-engineer report. Stop there — it's a deliverable you can hand to a client — or ratify its Top 10 and `audit-repair` executes them **one at a time**, verifying each against its acceptance check. |
-| **Your repo page presentable** (the README + community files) **— and, if you choose, fixed** — *"polish my README"* · *"is this repo ready to go public?"* · *"set up CONTRIBUTING / templates"* | 💅 **`gitalive`** → 🧑 *your call* → 🧰 **`gitalive-repair`** | `gitalive` writes a read-only, project-type-aware audit — every finding citing a named standard, with a waiver file so it never nags you about deliberate choices. Stop there, or ratify the findings and `gitalive-repair` executes them one at a time — re-checking each before editing, asking for facts only you own (license, security contact) instead of inventing them, and running **zero commands** the whole time. |
-
-And the whole time — every journey, every step — the 🛡️ **guard** blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more destructive commands before they ever execute.
-
-> [!NOTE]
-> **Don't memorize the order — start anywhere.** The skills route you: type `/lazarus:repair` with no plan and it stops and offers to run `discover` first; finish `discover` and it names the next command; `audit-repair` refuses to run until an `audit` is ratified, and `gitalive-repair` refuses without a ratified `gitalive` audit. The journeys stay independent — none requires another, and `audit` or `gitalive` are perfectly useful as reports you never act on.
-
-**New here?** The three commands below get you running in under a minute — no config, no keys. **Want the internals?** The collapsible **Deep dive** sections further down open up the guard's design, the anti-hallucination model, and the research behind it. For the whole picture in one read, see the [complete project overview](docs/OVERVIEW.md).
-
-**Contents:** [Three goals, six commands](#-three-goals-six-commands) · [Install (no signup, no SSH keys)](#-install-no-signup-no-ssh-keys) · [Watch it work](#-watch-it-work) · [The journeys](#%EF%B8%8F-the-journeys) · [The part that makes it safe to actually run](#%EF%B8%8F-the-part-that-makes-it-safe-to-actually-run) · [GitAlive — your repo's proof of life](#-gitalive--your-repos-proof-of-life) · [lazarus-github: audit findings as GitHub Issues](#-lazarus-github--file-audit-findings-as-github-issues) · [FAQ](#-faq) · [Star this repo](#-star-this-repo-it-decides-what-comes-next)
-
-## ⚡ Install (no signup, no SSH keys)
-
-In any `claude` session, run these **three commands — one at a time** (press Enter after each; don't paste them together):
-
-**1 — add the marketplace**
 ```text
 /plugin marketplace add https://github.com/CognitiveCodeAI/lazarus
-```
-**2 — install the plugin**
-```text
 /plugin install lazarus@cognitivecode
-```
-**3 — activate it in your session**
-```text
 /reload-plugins
 ```
 
-That's it. It installs **globally** — active in every repo you open. No file copying, no config, no API keys, no signup.
+No config, no API keys, no signup — installed globally, active in every repo you open.
 
 > [!IMPORTANT]
-> **Don't skip step 3.** Installing *registers* the plugin, but its skills, hooks, and guard don't go live until you run `/reload-plugins` (or restart `claude`). If you tried a command below and nothing happened, this is almost always why.
+> Don't skip `/reload-plugins` — skills and the guard only go live after it (or a restart). And use the full `https://…` URL: the short form clones over SSH and fails without SSH keys.
 
-> [!WARNING]
-> **Use the full `https://…` URL, not the short `CognitiveCodeAI/lazarus` form.** The short form makes Claude Code clone over SSH; if you don't have GitHub SSH keys set up you'll get `Permission denied (publickey)` or `Host key verification failed`. The HTTPS URL needs no SSH and no auth — it just works.
-
-Then open any repo, run `claude`, and either type **`/lazarus:discover`** or **`/lazarus:audit`** — or just say *"make this run locally."* See it in action below. 👇
+Then open any repo and just say *"make this run locally."*
 
 ## 🎬 Watch it work
-
-A scary repo to a running app — discover, you approve, repair, and the guard swatting a destructive command mid-run:
 
 <div align="center">
 <img src="assets/demo.svg" alt="Animated terminal: discover writes a plan, you approve, repair fixes the blockers, the guard blocks rm -rf /, and the app boots" width="100%" />
 </div>
 
-## 🗺️ The journeys
+## 🧭 The three journeys
 
-Three independent journeys. One makes the code run; one tells you what to do about it — and fixes it, if you say so; one makes the repo worth showing.
+Six skills, but you only ever choose a **goal**. Every journey is *plan → you approve → execute*:
 
-```mermaid
-flowchart LR
-    A["any codebase<br/>(broken or healthy)"] --> B{what do<br/>you need?}
+| You want… | Just say… | The journey | You get |
+|---|---|---|---|
+| 🔧 **It running** | *"make this run locally"* · *"why won't this start?"* | **`discover`** → 🧑 → **`repair`** | A ratified plan, the blockers fixed, a `CLAUDE.md` of *verified* commands |
+| 🧭 **It assessed — then fixed** | *"audit this repo"* · *"refactor or rewrite?"* | **`audit`** → 🧑 → **`audit-repair`** | A 12-section principal-engineer report; its Top 10 executed one finding at a time |
+| ⚡ **It alive to visitors** | *"polish my README"* · *"ready to go public?"* | **`gitalive`** → 🧑 → **`gitalive-repair`** | A standards-cited repo-page audit; the fixes, behind your gate |
 
-    B -->|make it run| C["🔍 lazarus:discover<br/>read-only"]
-    C --> D["📋 DISCOVERY.md<br/>plan + 'done' checklist"]
-    D --> E(["🧑 you approve<br/>the checklist"])
-    E --> F["🔧 lazarus:repair<br/>works the blockers"]
-    F --> G["✅ running app +<br/>verified CLAUDE.md"]
+**Start anywhere — the skills route you.** `repair` with no plan offers to run `discover`; every apply phase refuses to run without its ratified report. Each report is also a complete deliverable on its own. Commands are `/lazarus:<skill>`, but plain English triggers the same thing.
 
-    B -->|assess it| H["🧭 lazarus:audit<br/>read-only"]
-    H --> I["📊 CODEBASE_AUDIT.md<br/>risks · what to fix first<br/>· refactor vs rewrite"]
-    I -.->|"optional"| J(["🧑 you ratify<br/>the Top 10"])
-    J --> K["🛠️ lazarus:audit-repair<br/>one finding at a time"]
-    K --> L["✅ findings fixed +<br/>verified against checks"]
-
-    B -->|polish the repo page| M["💅 lazarus:gitalive<br/>read-only"]
-    M --> N["📝 GITALIVE_AUDIT.md<br/>scorecard · cited findings<br/>· recommended fixes"]
-    N -.->|"optional"| O(["🧑 you ratify<br/>the findings"])
-    O --> P["🧰 lazarus:gitalive-repair<br/>one finding at a time, zero shell"]
-    P --> Q["✅ findings fixed +<br/>GITALIVE_CHANGES.md"]
-
-    style A fill:#fee2e2,stroke:#ef4444,color:#111
-    style G fill:#dcfce7,stroke:#22c55e,color:#111
-    style I fill:#e0f2fe,stroke:#0ea5e9,color:#111
-    style N fill:#e0f2fe,stroke:#0ea5e9,color:#111
-    style E fill:#fef9c3,stroke:#eab308,color:#111
-    style J fill:#fef9c3,stroke:#eab308,color:#111
-    style O fill:#fef9c3,stroke:#eab308,color:#111
-    style L fill:#dcfce7,stroke:#22c55e,color:#111
-    style Q fill:#dcfce7,stroke:#22c55e,color:#111
-```
-
-**Type the command, or just describe what you want** — both work. The fast path is the command itself (start typing `/discover`, `/repair`, `/audit`, or `/gitalive` and it autocompletes); plain English triggers the same skill.
-
-**Journey 1 — make it run**
-
-| Command | Also triggers on… | What it does |
-|---|---|---|
-| **`/lazarus:discover`** | *"make this run locally"* · *"why won't this start?"* · *"onboard this repo"* · *"help me get oriented"* | Investigates **read-only**, writes `DISCOVERY.md` — a *repairability verdict*, a plan, and a concrete *definition of done* — then **stops and waits for you**. |
-| **`/lazarus:repair`** | *"execute the repair plan"* · *"fix this codebase"* · *"work the blockers"* | Works the blockers in order, logs every command it actually ran to `VERIFICATION_REPORT.md`, and promotes the commands that *truly worked* into a `CLAUDE.md`. Needs a ratified `DISCOVERY.md` first — and refuses one whose verdict is *not-repairable* (never-built features are feature work, not a repair). |
-
-**Journey 2 — assess it, then (optionally) fix it**
-
-| Command | Also triggers on… | What it does |
-|---|---|---|
-| **`/lazarus:audit`** | *"review this code"* · *"audit this repo"* · *"what should we fix first?"* · *"refactor or rewrite?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased plan. **Read-only**; feeds `audit-repair` if you choose to act on it. |
-| **`/lazarus:audit-repair`** | *"execute the audit"* · *"fix the audit findings"* · *"work the Top 10 action items"* · *"apply the modernization plan"* | Executes a ratified `CODEBASE_AUDIT.md` §11 **one finding at a time** — ratify → act → verify against each item's acceptance check — safety-rails first, behind the guard. The strategic apply phase, exactly as `repair` is for `discover`. |
-
-**Journey 3 — polish the repo page (README + community files), then (optionally) fix it**
-
-| Command | Also triggers on… | What it does |
-|---|---|---|
-| **`/lazarus:gitalive`** | *"polish my README"* · *"is this repo ready to go public?"* · *"DevRel review"* · *"set up CONTRIBUTING / CODE_OF_CONDUCT / issue templates"* | **Read-only**, project-type-aware audit of the repo's public files — README, community-health files, markdown accessibility — every finding citing a named standard (GitHub community profile, CommonMark, WCAG, Diátaxis). Writes `GITALIVE_AUDIT.md` after you approve; a waiver file keeps your deliberate choices from being re-flagged. GitHub *settings* (topics, social preview) are out of scope — they need `gh`, which this skill structurally cannot run. |
-| **`/lazarus:gitalive-repair`** | *"apply the GitAlive audit"* · *"fix the repo-page findings"* · *"scaffold the community files"* · *"fix my README per the audit"* | Executes a ratified `GITALIVE_AUDIT.md` **one finding at a time** — re-observes before every edit (a finding fixed since the audit is logged `already-satisfied`, untouched), asks for facts only you own (license choice, security contact) **instead of inventing them**, refuses fixes that reach outside the presentation file family, and verifies each change against its rubric check in `GITALIVE_CHANGES.md`. **Zero shell** — like `gitalive`, it cannot run a command at all. |
-
-> [!TIP]
-> **Pairs with `/code-review`** — a *built-in* Claude Code command (not part of Lazarus). Point it at your current diff for a focused bug-and-cleanup pass once the app runs.
-
-> [!TIP]
-> **Turn an audit into a backlog.** The optional **`lazarus-github`** companion files an audit's findings as GitHub Issues — see the **lazarus-github** section below.
-
-## 🛡️ The part that makes it safe to actually run
-
-Here's the headline. Letting an agent loose in an unfamiliar repo is terrifying because one confident-but-wrong command can wreck your machine. So Lazarus ships a **deterministic guard** — a `PreToolUse` hook that inspects every shell command *before* it runs and refuses the dangerous ones.
+## 🛡️ The guard
 
 <div align="center"><img src="assets/guard.png" alt="Terminal: Claude runs 'rm -rf / --no-preserve-root', the Lazarus guard returns BLOCKED, exit 2, the command never executes" width="78%" /></div>
 
-This is **not** a politely-worded instruction Claude can talk itself out of. It's a hook that runs outside the model and returns "no." It blocks `rm -rf /`, `git push --force`, `git reset --hard origin`, `DROP TABLE`, `terraform destroy`, `kubectl delete`, `npm publish`, and ~25 more patterns — and it **composes** with any hooks you already have, so nothing of yours is overwritten.
+A `PreToolUse` hook inspects every shell command *before* it runs and refuses the dangerous ones — `rm -rf /`, force-push, `DROP TABLE`, `terraform destroy`, and ~25 more. It is **not** a politely-worded instruction the model can talk itself out of: it runs outside the model, fails closed, and composes with hooks you already have.
+
+## ⚡ GitAlive — your repo's proof of life
+
+🧟‍♂️ *IT'S ALIVE — now make the repo page prove it.* Your README is the first thing anyone checks to decide whether a project is worth their time. `gitalive` audits everything a visitor sees *before* the source — README, LICENSE, CONTRIBUTING, security policy, templates, accessibility — against **cited standards, never taste**. `gitalive-repair` fixes what you ratify, asking for facts only you own (which license? what security contact?) and running **zero shell commands**.
+
+<div align="center">
+<img src="assets/gitalive-before-after.svg" alt="Before and after GitAlive on this very repo: before — project name trapped in a PNG with no heading, a CI pipeline with no badge, no table of contents, contributor docs one plugin behind; after — real heading, live CI badge, organized contents, current docs, clean re-audit" width="100%" />
+</div>
+
+That's not a mock-up — it's **this repo**, as GitAlive's first run found it and as it stands after the ratified fixes. Deliberate choices stay quiet: waive an item once and re-runs never nag you about it.
+
+## 🧩 The family
+
+```text
+lazarus/  ← the marketplace
+├── plugins/lazarus           🧟 core — the six skills, the repo-explorer subagent, the guard
+├── plugins/lazarus-github    📋 optional — files an audit's Top 10 as GitHub Issues
+└── plugins/lazarus-forge     🛠️ optional — pre-build design review for new skills/plugins
+```
+
+Outward-facing integrations ship as **opt-in siblings, never in core** — the three-command install stays zero-config, and a `gh`/API failure can only reach someone who asked for it. The companion is one command: `/plugin install lazarus-github@cognitivecode`, then `/lazarus-github:issues` turns `CODEBASE_AUDIT.md` §11 into ratified, deduplicated GitHub Issues — re-runs never file twice.
 
 ---
 
@@ -165,12 +99,9 @@ This is **not** a politely-worded instruction Claude can talk itself out of. It'
 Long-running agents have a documented failure mode: they quietly turn *guesses* into *established facts* over many turns, then act on them. Lazarus is engineered against that.
 
 - **Confidence tags on every claim.** Everything written to `DISCOVERY.md` is tagged `[VERIFIED]` (observed in a real command), `[INFERRED]` (one strong signal), or `[ASSUMED]` (a guess). A claim **cannot** be promoted to `[VERIFIED]` without actually executing and observing it. Only `[VERIFIED]` facts are ever allowed into a `CLAUDE.md`.
-
-- **A mechanical Definition of Done.** Discovery doesn't end with a vibe ("looks done"). It ends with runnable assertions — *`install` exits 0*, *`build` exits 0*, *the start command stays up 30s*, *one real end-to-end smoke check passes*. Repair isn't finished until those check.
-
-- **Forensic file separation.** `DISCOVERY.md` (what we *believed* before) and `VERIFICATION_REPORT.md` (what we *observed* during) are kept as **separate files, never edited in place**. When something breaks three weeks later, you can see exactly what was assumed vs. proven.
-
-- **Plan Mode is the enforcement, not a request.** Discovery and audit run in Claude Code's Plan Mode, which is read-only *at the tool level*. It's a structural guarantee, not "please don't edit anything."
+- **A mechanical Definition of Done.** Discovery doesn't end with a vibe ("looks done"). It ends with runnable assertions — *`install` exits 0*, *the start command stays up 30s*, *one real end-to-end smoke check passes*.
+- **Forensic file separation.** What we *believed* before (`DISCOVERY.md`) and what we *observed* during (`VERIFICATION_REPORT.md`) are separate files, never edited in place — so you can always see what was assumed vs. proven.
+- **Plan Mode is the enforcement, not a request.** The read-only skills run read-only *at the tool level* — a structural guarantee, not "please don't edit anything."
 
 </details>
 
@@ -179,17 +110,13 @@ Long-running agents have a documented failure mode: they quietly turn *guesses* 
 
 <br/>
 
-The hook is a single bash script (`scripts/check-destructive.sh`) wired in via `hooks/hooks.json`. The non-obvious engineering:
+One bash script (`scripts/check-destructive.sh`), wired via `hooks/hooks.json`:
 
-- **It reads tool input as JSON on stdin** and extracts `.tool_input.command`. (A common mistake is to read a `$CLAUDE_TOOL_INPUT_command` env var — that variable doesn't exist in current Claude Code, and a hook written against it silently passes *everything*. This one was built and tested against the real contract.)
+- **Reads tool input as JSON on stdin** and extracts `.tool_input.command` precisely — never coarse text-matching, so a scary word in a file *path* never causes a false block. (Hooks that read a `$CLAUDE_TOOL_INPUT_command` env var silently pass everything — that variable doesn't exist. This one was built against the real contract.)
+- **Four parsers, fail-closed.** `jq` → `python3` → `python` → `perl` (core `JSON::PP`, stock on macOS/Linux). If none exist, it blocks every bash command rather than letting them through.
+- **`exit 2` = deny.** Claude sees the stderr and adjusts instead of retrying blindly.
 
-- **Precise extraction, four ways.** It pulls the command via the first available of `jq` → `python3` → `python` → `perl` (Perl uses core `JSON::PP`, present on stock macOS/Linux). It never does coarse text-matching on the raw payload, so a destructive word sitting in some *other* field (like a directory path) never causes a false block.
-
-- **It fails *closed*.** If somehow none of those parsers exist, the hook blocks every bash command with an explanation rather than letting commands through unchecked. The safe failure mode is "stop," never "allow."
-
-- **`exit 2` = deny.** The hook's stderr is shown to Claude, which adjusts instead of retrying blindly. Want to allow something it blocks? Run it yourself, outside Claude Code.
-
-Customizing the blocklist is one regex in one file. Extend it for your environment (your prod CLI, your migration tools) and push — every install picks it up.
+Customizing the blocklist is one regex in one file — fork, extend for your environment, and every install picks it up.
 
 </details>
 
@@ -198,157 +125,61 @@ Customizing the blocklist is one regex in one file. Extend it for your environme
 
 <br/>
 
-The design choices aren't arbitrary; most trace to a specific 2026 empirical finding:
-
-- **Verified/inferred/assumed split** — agents convert assumptions into facts over long runs *(arXiv 2602.16666, "Towards a Science of AI Agent Reliability")*.
-- **Test-pass, not just build-pass, as the bar** — fix-related agent PRs fail most often at test cases, not builds *(arXiv 2602.00164)*.
-- **Definition-of-Done as evolving constraints** — repo repair is "search over evolving behavioral constraints," not optimization under fixed tests *(arXiv 2604.04580)*.
-- **Bias against rewrite** — un-merged agent PRs tend to be the large, sprawling ones; incremental beats rewrite on average *(arXiv 2601.15195)*.
-- **Cheap read-only exploration on Haiku** — mapping a large repo with read-only text tools on a small (Haiku-tier) model captures the structural signal at a fraction of the token cost of doing it on the main model.
-- **CLAUDE.md is normative, not community-converged** — there's still no settled standard, so the toolkit anchors to a commands-first structure *(arXiv 2510.21413)*.
+- **Verified/inferred/assumed split** — agents convert assumptions into facts over long runs *(arXiv 2602.16666)*.
+- **Test-pass, not just build-pass** — fix-related agent PRs fail most often at tests, not builds *(arXiv 2602.00164)*.
+- **Definition-of-Done as evolving constraints** — repo repair is "search over evolving behavioral constraints" *(arXiv 2604.04580)*.
+- **Bias against rewrite** — un-merged agent PRs tend to be the large, sprawling ones *(arXiv 2601.15195)*.
+- **README content research** — what visitors look for, and what's most often missing *(Prana et al., EMSE 2019)* — grounds the GitAlive rubric, alongside GitHub's community profile, CommonMark, and WCAG.
+- **Cheap read-only exploration on Haiku** — mapping a huge repo on a small model captures the structure at a fraction of the cost.
 
 </details>
-
-<details>
-<summary><b>🧩 What's actually in the box</b></summary>
-
-<br/>
-
-This repo is a Claude Code **plugin marketplace** with a small, growing family:
-
-```text
-lazarus/  ← the marketplace
-│
-├── plugins/lazarus/                 🧟 core   — /plugin install lazarus@cognitivecode
-│   ├── skills/discover · repair · audit · audit-repair · gitalive · gitalive-repair
-│   ├── agents/repo-explorer                read-only Haiku subagent for huge repos
-│   └── hooks/ + scripts/check-destructive.sh   the deterministic guard
-│
-├── plugins/lazarus-github/         📋 optional companion — /plugin install lazarus-github@cognitivecode
-│   └── skills/issues                       turns an audit's Top 10 into GitHub Issues
-│
-└── plugins/lazarus-forge/          🛠️ optional companion — /plugin install lazarus-forge@cognitivecode
-    └── skills/design-review                pre-build quality gate for skill/plugin/agent/MCP/hook proposals
-```
-
-**Built to grow.** Anything outward-facing (creating GitHub issues, posting to Slack, filing Linear/Jira tickets) ships as an **opt-in sibling plugin**, never bundled into core — so the three-command install stays zero-config and an integration's `gh`/API failure can't reach anyone who didn't ask for it.
-
-The `repo-explorer` subagent is deliberately restricted (read-only tool allowlist, Haiku tier) so mapping a 5,000-file monolith doesn't burn your context or your budget.
-
-</details>
-
-## ⚡ GitAlive — your repo's proof of life
-
-🧟‍♂️ *IT'S ALIVE — now make the repo page prove it.*
-
-Your README is the first thing anyone checks to decide whether a project is alive: real title, live badges, a license, a way to contribute, signs of care. **GitAlive** is that judgment, systematized — `gitalive` audits everything a visitor sees *before* the source (README, LICENSE, CONTRIBUTING, security policy, templates, markdown accessibility) against **cited standards, never taste**, and `gitalive-repair` fixes what you ratify.
-
-<div align="center">
-<img src="assets/gitalive-before-after.svg" alt="Before and after GitAlive on this very repo: before — project name trapped in a PNG with no H1, a CI pipeline with no badge, a 300-line README with no table of contents, contributor docs one plugin behind; after — real H1, live CI badge, table of contents, current docs, re-audit scorecard clean" width="100%" />
-</div>
-
-**That before/after isn't a mock-up — it's this repo.** GitAlive's first run graded the Lazarus README itself (0 Critical · 2 High · 2 Medium · 4 Low): it caught a CI pipeline wearing no badge, a project name that existed only inside a PNG, and contributor docs one plugin behind reality. Every finding fixed behind the ratify gate; the table of contents above was written by `gitalive-repair`. On the follow-up run it correctly detected 7 of 8 findings as already fixed and **touched nothing** — the re-observe-before-edit rule working as designed.
-
-```text
-/lazarus:gitalive            # the audit — read-only, zero shell, writes GITALIVE_AUDIT.md
-/lazarus:gitalive-repair     # the fixes — one finding at a time, asks for facts it can't know
-```
-
-Deliberate choices stay quiet: waive any item once (`.lazarus/gitalive-waivers.yml`) and re-runs never nag you about it again.
-
-## 🔗 lazarus-github — file audit findings as GitHub Issues
-
-After running `/lazarus:audit`, you can turn the audit's Top 10 Action Items into filed GitHub Issues with one command. **`lazarus-github` is the first sibling plugin** in the Lazarus ecosystem — opt-in, installed separately from core.
-
-**Install** (one at a time, like the core install):
-
-```text
-/plugin install lazarus-github@cognitivecode
-```
-```text
-/reload-plugins
-```
-
-**Use:**
-
-```text
-/lazarus-github:issues
-```
-
-The skill reads `CODEBASE_AUDIT.md` §11, shows you the proposed issues, lets you adjust titles and labels and pick which to file, then runs `gh issue create` for each one. **Ratify-before-create — nothing is filed silently.**
-
-**Idempotent on re-runs.** Each created issue carries a hidden provenance marker (`<!-- lazarus:audit-item:<slug> -->`, keyed to a *stable per-item slug — not the rank*) plus a `lazarus-audit` label. Re-audit your repo, re-run `/lazarus-github:issues`, and items that already have an issue are skipped — only new findings get filed. Re-ranking on a re-audit can't cause duplicates, because the marker keys on the slug, not the position.
-
-**GitHub-only for v1.** Uses the `gh` CLI, which most developers already have — pre-authenticated in many environments (Codespaces, devcontainers, anyone who's run `gh auth login`). No API tokens to manage.
-
-**What it requires:** `gh` installed, authenticated (`gh auth status` succeeds), and resolving to the current repo (`gh repo view` succeeds). The skill fails fast with a clear message if any of these isn't true — it never partially files.
-
-### The sibling plugin pattern
-
-`lazarus-github` establishes the structural pattern for outward-facing integrations: each ships as a **separate opt-in plugin in the same marketplace, never bundled into core.** Core Lazarus stays small, fast, and zero-config; integrations grow the ecosystem by addition.
-
-**Why not one plugin with every integration?** Each tracker has its own auth story — Linear and Jira need API tokens and workspace config; GitLab brings its own CLI. Bundling them into core would force every user to pay the setup cost for integrations they'll never use. Sibling plugins let you install only what you need — and a `gh`/API failure can only ever reach someone who opted in.
-
-**Other tracker integrations** (Linear, Jira, GitLab) are part of the architectural vision — *not* committed roadmap items. If one would help you, [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions); interest signals what to build next.
 
 ## ❓ FAQ
 
 <details>
-<summary><b>I installed it but <code>/lazarus:discover</code> (or the guard) does nothing. Why?</b></summary>
+<summary><b>I installed it but the commands (or the guard) do nothing. Why?</b></summary>
 <br/>
-You almost certainly skipped <code>/reload-plugins</code>. Installing registers the plugin; its skills, hooks, and guard only go live after you run <code>/reload-plugins</code> (or restart <code>claude</code>) in that session. Run it once and the <code>/lazarus:discover</code>, <code>/lazarus:repair</code>, <code>/lazarus:audit</code>, <code>/lazarus:audit-repair</code>, <code>/lazarus:gitalive</code>, and <code>/lazarus:gitalive-repair</code> commands appear.
+You almost certainly skipped <code>/reload-plugins</code>. Run it once (or restart <code>claude</code>) and all six <code>/lazarus:*</code> commands appear.
 </details>
 
 <details>
 <summary><b>Will it actually change my code without asking?</b></summary>
 <br/>
-Discovery, audit, and gitalive are read-only (Plan Mode — and gitalive can't even run shell commands; they're removed from its tool pool). Repair, audit-repair, and gitalive-repair change files — but only after you ratify a plan (the "done" checklist, the audit's Top 10, or the GitAlive findings), and the guard blocks destructive shell commands throughout (gitalive-repair goes further: it runs no commands at all). You stay in the loop at the one decision that matters: ratifying what "done" means.
+The audit skills (<code>discover</code>, <code>audit</code>, <code>gitalive</code>) are read-only. The apply skills (<code>repair</code>, <code>audit-repair</code>, <code>gitalive-repair</code>) change files — but only after you ratify a plan, with the guard active throughout (and <code>gitalive-repair</code> can't run commands at all). You own the one decision that matters: what "done" means.
 </details>
 
 <details>
 <summary><b>Do I need <code>jq</code> installed?</b></summary>
 <br/>
-No. The guard uses whichever of <code>jq</code> / <code>python3</code> / <code>python</code> / <code>perl</code> is present. Stock macOS and most Linux ship <code>perl</code> with the core <code>JSON::PP</code> module, so the guard works out of the box even with no <code>jq</code> and no Python. If <em>none</em> of the four are present, it blocks bash commands until you install one — it never silently lets them through.
+No. The guard uses whichever of <code>jq</code>/<code>python3</code>/<code>python</code>/<code>perl</code> is present (stock macOS/Linux always has one), and blocks rather than allows if none are.
 </details>
 
 <details>
 <summary><b>Does it work on Windows?</b></summary>
 <br/>
-Use <b>WSL</b>. The guard is a bash hook (<code>scripts/check-destructive.sh</code>), so it needs a Unix-like shell with one of <code>jq</code>/<code>python3</code>/<code>python</code>/<code>perl</code>. Under WSL (or Git Bash) everything works; in a bare Windows <code>cmd</code>/PowerShell session the hook can't execute, which means no protection — so run Lazarus from WSL. (The badges up top say macOS · Linux for this reason.)
+Use <b>WSL</b>. The guard is a bash hook; in a bare <code>cmd</code>/PowerShell session it can't execute, which means no protection.
 </details>
 
 <details>
 <summary><b>How do updates work?</b></summary>
 <br/>
-Two steps. <b>1)</b> Run <code>/plugin update lazarus@cognitivecode</code> (and the same for <code>lazarus-github</code> / <code>lazarus-forge</code> if you installed them). <b>2)</b> Run <code>/reload-plugins</code> (or restart <code>claude</code>) — same rule as installing: the updated skills, hooks, and guard don't go live in your session until you reload. The plugin is git-SHA-versioned, so <code>/plugin update</code> always pulls the latest <code>main</code> — there's no version number you have to match. Tagged releases like <code>v0.5.0</code> are human-readable changelog markers (see <a href="https://github.com/CognitiveCodeAI/lazarus/releases">Releases</a>), not something you pin to. Check what you're on with <code>/plugin list</code>.
+<code>/plugin update lazarus@cognitivecode</code> (and the same for any companions), then <code>/reload-plugins</code>. The plugin is git-SHA-versioned — updates always pull the latest <code>main</code>; tags like <code>v0.8.0</code> are just <a href="https://github.com/CognitiveCodeAI/lazarus/releases">changelog markers</a>. Check yours with <code>/plugin list</code>.
 </details>
 
 <details>
 <summary><b>Can I customize the blocked-command list?</b></summary>
 <br/>
-Yes — it's one regex in <code>scripts/check-destructive.sh</code>. Fork, edit, and point your team at your fork's marketplace.
+Yes — one regex in <code>scripts/check-destructive.sh</code>. Fork and point your team at your fork's marketplace.
 </details>
 
-## ⭐ Star this repo (it decides what comes next)
+## ⭐ Star it
 
-<div align="center">
+**If Lazarus saved you an afternoon, drop a star** — it's how the next person staring at a dead repo finds this, and it's how I decide what to build next.
 
-**If Lazarus saved you an afternoon, drop a star.** ⭐
-
-</div>
-
-It's a 1-second click, and it does two things: it helps the next person staring at a dead repo actually *find* this, and it tells me whether to keep building in the open.
-
-I have **more Claude Code tools ready to ship** — I'm releasing them based on real signal. Stars and activity here are how I gauge whether people want them. So a star isn't just a thank-you; it's a vote for the next one.
-
-> ✅ **Just shipped: GitAlive** ⚡ — the repo-page journey gets a name worthy of it. `presentation` → **`gitalive`**, `presentation-repair` → **`gitalive-repair`**: audit everything a visitor sees before your source, then fix what you ratify — re-checking each finding before editing, asking for facts only you own, running **zero shell commands**. See the before/after above — it's this very repo. ⭐ star and [open a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) to shape what's next.
-
-> 💬 Got an idea, a bug, or a repo Lazarus choked on? [Open an issue](https://github.com/CognitiveCodeAI/lazarus/issues) or start a [discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) — I read every one.
+> ✅ **Just shipped: GitAlive** ⚡ — the repo-page journey, renamed and spotlighted (see the before/after above — it's this very repo). Got an idea or a repo Lazarus choked on? [Open an issue](https://github.com/CognitiveCodeAI/lazarus/issues) or [start a discussion](https://github.com/CognitiveCodeAI/lazarus/discussions) — I read every one.
 
 ---
 
-**Maintaining or contributing?** See [MAINTAINING.md](./MAINTAINING.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
-
 <div align="center">
-<sub>Built with ❤️ by <a href="https://cognitivecode.ai">Cognitive Code</a> · MIT licensed · Made for <a href="https://claude.com/claude-code">Claude Code</a></sub>
+<sub>Built with ❤️ by <a href="https://cognitivecode.ai">Cognitive Code</a> · MIT licensed · Made for <a href="https://claude.com/claude-code">Claude Code</a> · <a href="docs/OVERVIEW.md">Full project overview</a> · <a href="./CONTRIBUTING.md">Contributing</a> · <a href="./MAINTAINING.md">Maintaining</a></sub>
 </div>
