@@ -23,7 +23,7 @@ Point Claude at a repository and let Lazarus help make it: Alive again, document
 
 - 🔧 **Make it run** (`discover` → `repair`) — point it at code that won't start, or that you simply don't know yet. It investigates, proposes a plan with a concrete "done" checklist you approve, then works through the blockers until the app boots — and writes down what actually worked so the next person (or the next you) doesn't start from zero.
 - 🧭 **Assess it — and, if you choose, fix it** (`audit` → `audit-repair`) — get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on, hand to a client — or have executed finding-by-finding, each behind your approval.
-- 💅 **Make it presentable — and, if you choose, fix that too** (`presentation` → `presentation-repair`) — a DevRel-grade, read-only review of everything a stranger sees *before* the source: README, LICENSE, CONTRIBUTING, security policy, templates, markdown accessibility. Every finding cites a real standard (GitHub's community profile, CommonMark, WCAG) — never taste. Then `presentation-repair` executes the findings you ratify, asking for the facts only you own (which license? what security contact?) instead of inventing them.
+- 💅 **Polish your repo's public page — and, if you choose, fix it too** (`presentation` → `presentation-repair`) — not the code: the **README and the files around it** (LICENSE, CONTRIBUTING, security policy, issue templates, markdown accessibility) — everything a visitor sees on your GitHub page *before* reading the source. Every finding cites a real standard (GitHub's community profile, CommonMark, WCAG) — never taste. Then `presentation-repair` executes the findings you ratify, asking for the facts only you own (which license? what security contact?) instead of inventing them.
 
 Everything runs behind a guard that blocks destructive commands before they ever run — and **nothing changes until you approve a plan.** It'll resurrect a dead repo that won't even start (the namesake), but it's just as useful on healthy code you want made runnable, understood, assessed, or ready to show the world.
 
@@ -35,7 +35,7 @@ Lazarus looks like six skills, but you only ever choose a **goal**. Each flows *
 |---|---|---|
 | **It running** — *"it won't start"* · *"I'm lost in this repo"* · *"I need to change it safely"* | 🔍 **`discover`** → 🧑 *you approve* → 🔧 **`repair`** | `discover` investigates read-only and writes a plan with a runnable "done" checklist; you approve it; `repair` works the blockers until each one passes — recording what actually worked in `CLAUDE.md`. |
 | **It assessed — and, if you choose, fixed** — *"what shape is this in?"* · *"maintain, refactor, or rewrite?"* · *"now go fix what the audit found"* | 🧭 **`audit`** → 🧑 *your call* → 🛠️ **`audit-repair`** | `audit` writes a read-only, 12-section principal-engineer report. Stop there — it's a deliverable you can hand to a client — or ratify its Top 10 and `audit-repair` executes them **one at a time**, verifying each against its acceptance check. |
-| **It presentable — and, if you choose, fixed** — *"polish my README"* · *"is this repo ready to go public?"* · *"set up CONTRIBUTING / templates"* | 💅 **`presentation`** → 🧑 *your call* → 🧰 **`presentation-repair`** | `presentation` writes a read-only, project-type-aware audit — every finding citing a named standard, with a waiver file so it never nags you about deliberate choices. Stop there, or ratify the findings and `presentation-repair` executes them one at a time — re-checking each before editing, asking for facts only you own (license, security contact) instead of inventing them, and running **zero commands** the whole time. |
+| **Your repo page presentable** (the README + community files) **— and, if you choose, fixed** — *"polish my README"* · *"is this repo ready to go public?"* · *"set up CONTRIBUTING / templates"* | 💅 **`presentation`** → 🧑 *your call* → 🧰 **`presentation-repair`** | `presentation` writes a read-only, project-type-aware audit — every finding citing a named standard, with a waiver file so it never nags you about deliberate choices. Stop there, or ratify the findings and `presentation-repair` executes them one at a time — re-checking each before editing, asking for facts only you own (license, security contact) instead of inventing them, and running **zero commands** the whole time. |
 
 And the whole time — every journey, every step — the 🛡️ **guard** blocks `rm -rf /`, force-push, `DROP TABLE`, and ~25 more destructive commands before they ever execute.
 
@@ -101,7 +101,7 @@ flowchart LR
     J --> K["🛠️ lazarus:audit-repair<br/>one finding at a time"]
     K --> L["✅ findings fixed +<br/>verified against checks"]
 
-    B -->|make it presentable| M["💅 lazarus:presentation<br/>read-only"]
+    B -->|polish the repo page| M["💅 lazarus:presentation<br/>read-only"]
     M --> N["📝 PRESENTATION_AUDIT.md<br/>scorecard · cited findings<br/>· recommended fixes"]
     N -.->|"optional"| O(["🧑 you ratify<br/>the findings"])
     O --> P["🧰 lazarus:presentation-repair<br/>one finding at a time, zero shell"]
@@ -134,7 +134,7 @@ flowchart LR
 | **`/lazarus:audit`** | *"review this code"* · *"audit this repo"* · *"what should we fix first?"* · *"refactor or rewrite?"* | Produces a 12-section `CODEBASE_AUDIT.md` — architecture, risks, security, frontend/accessibility, a phased plan. **Read-only**; feeds `audit-repair` if you choose to act on it. |
 | **`/lazarus:audit-repair`** | *"execute the audit"* · *"fix the audit findings"* · *"work the Top 10 action items"* · *"apply the modernization plan"* | Executes a ratified `CODEBASE_AUDIT.md` §11 **one finding at a time** — ratify → act → verify against each item's acceptance check — safety-rails first, behind the guard. The strategic apply phase, exactly as `repair` is for `discover`. |
 
-**Journey 3 — make it presentable, then (optionally) fix it**
+**Journey 3 — polish the repo page (README + community files), then (optionally) fix it**
 
 | Command | Also triggers on… | What it does |
 |---|---|---|

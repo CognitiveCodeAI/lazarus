@@ -26,7 +26,7 @@ Lazarus works on *any* repo: one you inherited, an open-source project, your own
 
 - **🔧 Make it run.** Point it at code that won't start (or that you just don't know yet). It investigates, proposes a plan with a concrete "done" checklist you approve, then works through the blockers until the app boots — and writes down what actually worked so the next person doesn't start from zero.
 - **🧭 Assess it — and, if you choose, fix it.** Get a principal-engineer read: what's risky, what to fix first, and whether to maintain, refactor, or rewrite. A report you act on, hand to a client — or have executed finding-by-finding by `audit-repair`, each behind your approval. The audit itself changes nothing.
-- **💅 Make it presentable — and, if you choose, fix that too.** A DevRel-grade, read-only review of everything a stranger sees before the source — README, community-health files, markdown accessibility — graded against cited standards, never taste. Produces `PRESENTATION_AUDIT.md`; then `presentation-repair` executes the findings you ratify, asking for the facts only you own instead of inventing them.
+- **💅 Polish the repo's public page — and, if you choose, fix it too.** Not the code: the README and the files around it — community-health files, markdown accessibility — everything a visitor sees on the GitHub page before the source, graded against cited standards, never taste. Produces `PRESENTATION_AUDIT.md`; then `presentation-repair` executes the findings you ratify, asking for the facts only you own instead of inventing them.
 
 The name is the namesake: it resurrects dead codebases. But it's just as useful on healthy code you want understood, assessed, or made runnable.
 
@@ -34,7 +34,7 @@ The name is the namesake: it resurrects dead codebases. But it's just as useful 
 
 ## 3. The six skills + the guard
 
-Lazarus is **six skills in three journeys** — *make it run* (`discover` → `repair`), *assess it, then optionally fix it* (`audit` → `audit-repair`), and *make it presentable, then optionally fix it* (`presentation` → `presentation-repair`) — with a guard running across everything. Each journey is plan → you approve → execute, and each apply phase refuses to run without its ratified upstream report.
+Lazarus is **six skills in three journeys** — *make it run* (`discover` → `repair`), *assess it, then optionally fix it* (`audit` → `audit-repair`), and *polish the repo page, then optionally fix it* (`presentation` → `presentation-repair`) — with a guard running across everything. Each journey is plan → you approve → execute, and each apply phase refuses to run without its ratified upstream report.
 
 ### `discover` — understand (read-only)
 Runs in Claude Code's **Plan Mode** (read-only at the tool level — it physically cannot edit). It traces how the code is meant to run and writes a `DISCOVERY.md` file containing: a **repairability verdict** (`repairable` / `partially-runnable` / `not-repairable` — broken-but-fixable blockers are split from never-built gaps), what the app appears to do, the inferred setup/build/test/run commands, a ranked list of blockers, and a **Mechanical Definition of Done** — runnable assertions like *"`npm install` exits 0, the server stays up 30 seconds, this endpoint returns 200."* Then it **stops and waits for you to approve.**
@@ -48,7 +48,7 @@ A separate journey that answers a different question: *should we own this?* It p
 ### `audit-repair` — act on the audit (optional, changes code behind your approval)
 The strategic apply phase, mirroring `discover → repair`. It requires a **ratified** `CODEBASE_AUDIT.md` and executes its §11 Top 10 Action Items **one finding at a time** — ratify → act → verify against each item's acceptance check — in modernization-plan order (safety rails before refactors), behind the same guard. Its outputs are `AUDIT_`-prefixed (`AUDIT_VERIFICATION_REPORT.md`, `AUDIT_IMPLEMENTATION_SUMMARY.md`) so they never collide with repair's files. The audit never requires it — a report you never act on is still a complete, useful outcome.
 
-### `presentation` — make it presentable (read-only, standalone)
+### `presentation` — polish the repo page (read-only, standalone)
 The DevRel analog of `audit`: a read-only, project-type-aware review of the repo's **public files** — README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, issue/PR templates, markdown accessibility — producing one artifact, `PRESENTATION_AUDIT.md`, behind the same ratify gate. Its defining rule: **no taste-only findings.** Every finding cites a named standard (GitHub's community-profile checklist, CommonMark, WCAG, Diátaxis, the README-content research) and carries file/line evidence; a self-check gate rejects anything else. It detects the project type (Claude Code plugin / Python / Node CLI / Node library) and applies the matching conventions — stopping to ask rather than guessing on ambiguous signals. A durable waiver file (`.lazarus/presentation-waivers.yml`) records your deliberate choices so re-runs never nag about them. Structurally read-only: shell, network, and delegation tools are removed from its tool pool via `disallowed-tools` — it audits files; it cannot run commands at all. GitHub *settings* (description, topics, social preview) need `gh` and are deliberately out of scope (a future `lazarus-github` settings skill).
 
 ### `presentation-repair` — act on the presentation audit (optional, changes files behind your approval)
@@ -142,7 +142,7 @@ You don't have to be a principal engineer to get a principal engineer's read. Th
 ## 10. Fast facts
 
 - **Name / tagline:** Lazarus — "Bring your codebase alive. Before production." A Claude Code plugin by Cognitive Code.
-- **Three journeys:** `discover → (you approve) → repair` ("make it run"); `audit → (you ratify) → audit-repair` ("assess it, then optionally fix it"); `presentation → (you ratify) → presentation-repair` ("make it presentable, then optionally fix it"). Every report also stands alone.
+- **Three journeys:** `discover → (you approve) → repair` ("make it run"); `audit → (you ratify) → audit-repair` ("assess it, then optionally fix it"); `presentation → (you ratify) → presentation-repair` ("polish the repo page — the README + community files — then optionally fix it"). Every report also stands alone.
 - **The guard:** deterministic `PreToolUse` hook, reads JSON on stdin, blocks ~25+ destructive patterns, fails closed, exit 2 = deny.
 - **Safety pillars:** confidence tags, mechanical Definition of Done, forensic file separation, Plan Mode read-only, human ratification gate.
 - **Ecosystem:** core `lazarus` + optional `lazarus-github` (audit → GitHub Issues) + optional `lazarus-forge` (pre-build design review); outward-facing features are opt-in sibling plugins.
